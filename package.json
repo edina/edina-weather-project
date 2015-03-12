@@ -1,0 +1,36 @@
+{
+    "name": "eclipse_visualization",
+    "version": "0.0.1",
+    "description": "Visualisation about eclipse",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/panterz/eclipse_visualization.git"
+    },
+    "keywords": [
+        "eclipse",
+        "d3",
+        "wind",
+        "visualiztion"
+    ],
+    "author": "panterz",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/panterz/eclipse_visualization/issues"
+    },
+    "homepage": "https://github.com/panterz/eclipse_visualization",
+    "preferGlobal": true,
+    "dependencies": {
+        "jquery": "1.11.2",
+        "leaflet": "0.7.3"
+    },
+    "devDependencies": {
+
+    },
+    "engines": {
+        "node": ">=0.10"
+    }
+}
