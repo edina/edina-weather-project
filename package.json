@@ -25,7 +25,8 @@
     "preferGlobal": true,
     "dependencies": {
         "jquery": "1.11.2",
-        "leaflet": "0.7.3"
+        "leaflet": "0.7.3",
+        "proj4leaflet": "0.7.0"
     },
     "devDependencies": {
 
