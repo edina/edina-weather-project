@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script src="heatmap.js"></script>
+    <script src="js/heatmap.js"></script>
     <script src="http://d3js.org/topojson.v1.min.js"></script>
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
@@ -19,14 +19,13 @@
   </head>
   <body>
     <div class="container-fluid">
+      <h1>National Eclipse Weather Experiment</h1>
       <div class="row">
         <div class="col-md-6">
-          <h1>Weather Experiment</h1>
           <div id="map"></div>
         </div>
         <div class="col-md-5">
           <div class="row">
-            <h1>Eclipse</h1>
             <div class="eclipse">
               <div id="sun" class="sun"></div>
               <div id="earth" class="earth"></div>
@@ -66,8 +65,9 @@
       </div>
     </div>
 
-    <script src="symbols.js"></script>
+    <script src="js/time.js"></script>
+    <script src="js/symbols.js"></script>
     <script type="text/javascript" src="js/eclipseShadow.js"></script>
-    <script src="newex.js"></script>
+    <script src="js/newex.js"></script>
   </body>
 </html>

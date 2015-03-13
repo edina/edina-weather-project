@@ -10,6 +10,19 @@
                           .scale(2250)
                           .translate([width / 2, height / 2]);
 
+  // Timeline slider
+  var slider = $( "#slider" ).slider({
+    range: "max",
+    min: 0,
+    max: 6,
+    value: 0
+  });
+  
+  slider.on('slide', function( event, ui ) {
+    setTime( ui.value );
+  });
+
+  // Load the data
   d3.json("gb8.json", function(error, uk) {
     if (error) return console.error(error);
 
@@ -28,7 +41,7 @@
         .attr("d", path);
 
     // Load wind data
-    d3.json("wind.json", function(error, data) {
+    d3.json("data/wind.json", function(error, data) {
       if (error) return console.error(error);
 
       var symb = svg.selectAll('.symb')
@@ -52,45 +65,16 @@
           return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + point.rotation + ') scale(' + point.size + ')';
         });
       }
-
-      function setTime(value) {
-        var hours = Math.floor(value/6);
-        var minutes = (value - (hours * 6)) * 10;
-        hours += 8;
-        if(minutes < 10) {
-          minutes = "0" + minutes;
-        }
-        if (hours < 10) {
-          hours = "0" + hours;
-        }
-        $("#time").html(hours + ':' + minutes);
-      }
-
-      // Timeline slider
-      var slider = $( "#slider" ).slider({
-        range: "max",
-        min: 0,
-        max: 6,
-        value: 0,
-        slide: function( event, ui ) {
-          setTime(ui.value);
-          doTransition(ui.value);
-          doHeatMap(ui.value);
-        }
+      
+      slider.on('slide', function( event, ui ) {
+        doTransition(ui.value);
       });
-      // heatmap radius slider
-      $( "#heatmap_radius_slider" ).slider({
-        min:10,
-        max:100,
-        step:10,
-        value:50
-      });
-
+      
       // Play button and loop controls
       var isPlaying = false;
       var loop = $("#loop");
       var sliderPlayback = null;
-      $("#play").click(function(btn) {
+      $("#play").on('click', function(btn) {
         if ( isPlaying ) {
           return;
         }
@@ -105,7 +89,7 @@
           doHeatMap(slider.slider("value"));
           i++;
 
-          if ( i == data.wind.length ) {
+          if ( i === slider.slider( 'option', 'max' ) + 1 ) {
             if ( loop.prop('checked') ) {
               i = 0;
             }
@@ -116,12 +100,47 @@
           }
         }, 500);
       });
-      $("#stop").click(function(btn) {
+      $("#stop").on('click', function(btn) {
         if ( sliderPlayback != null ) {
           window.clearInterval(sliderPlayback);
         }
         isPlaying = false;
       });
+      
+      // Load wind data
+      d3.json("data/cloudcover.json", function(error, data) {
+        if (error) return console.error(error);
+
+        var symb = svg.selectAll('.symb')
+          .data(data.cloud[0])
+          .enter().append('path')
+            .attr('transform', function(d,i) {
+              var coord = projection([d.x, d.y]);
+              return 'translate(' + coord[0] + ',' + coord[1] + ')';
+            })
+            .attr('d', function(d) {
+              return symbols.getSymbol(d.icon, 64);
+            })
+            .attr('stroke', '#333')
+            .attr('fill', function(d) {
+              if ( d.icon === 'sunny' ) {
+                return '#de0';
+              }
+              else {
+                return '#aaa';
+              }
+            });
+        
+              // Moves the symbols on the map
+        function doTransitionCloud( value ) {
+          symb.transition().attr('transform', function(d, i) {
+            var point = data.cloud[value][i];
+            var coord = projection([point.x, point.y]);
+            return 'translate(' + coord[0] + ',' + coord[1] + ')';
+          });
+        }
+
+      }); // end of async cloud data
     }); // end of async wind data
 
     // Put the shadow elements in the map
@@ -176,4 +195,10 @@
     });
     heatmapInstance2.setData(newdata) ;
   };
+  
+  slider.on('slide', function( event, ui ) {
+    doHeatMap(ui.value);
+  });
+
+
 })();
