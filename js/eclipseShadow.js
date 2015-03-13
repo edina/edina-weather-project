@@ -39,7 +39,7 @@ var eclipseShadow = function(map, projection, sliderElement) {
         return -1;
     };
 
-    var loadEclipsePath = $.getJSON('2015_eclipse_path.json');
+    var loadEclipsePath = $.getJSON('data/2015_eclipse_path.json');
     loadEclipsePath.done(function(data) {
         eclipseData = data;
 
