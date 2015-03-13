@@ -28,7 +28,7 @@
         .attr("d", path);
 
     // Load wind data
-    d3.json("wind.json", function(error, data) {
+    d3.json("data/wind.json", function(error, data) {
       if (error) return console.error(error);
 
       var symb = svg.selectAll('.symb')
@@ -124,7 +124,7 @@
       });
       
       // Load wind data
-      d3.json("cloudcover.json", function(error, data) {
+      d3.json("data/cloudcover.json", function(error, data) {
         if (error) return console.error(error);
 
         var symb = svg.selectAll('.symb')
