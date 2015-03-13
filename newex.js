@@ -21,6 +21,17 @@
     { x: -0.5, y: 54, rotation: 260, size: 1.1 },
     { x: -2.3, y: 57, rotation: 20, size: 0.7 },
   ]];
+  
+  var width = 960, height = 800;
+
+  var svg = d3.select("#map").append("svg")
+                             .attr("width", width)
+                             .attr("height", height);
+  
+  var projection = d3.geo.mercator()
+                          .center([0, 56.0])
+                          .scale(2250)
+                          .translate([width / 2, height / 2]);
 
   d3.json("gb8.json", function(error, uk) {
     if (error) return console.error(error);
@@ -28,10 +39,6 @@
 
     var gb = topojson.feature(uk, uk.objects.gb);
 
-    var projection = d3.geo.mercator()
-                          .center([0, 56.0])
-                          .scale(2250)
-                          .translate([width / 2, height / 2]);
     var path = d3.geo.path().projection(projection);
 
     svg.append("path")
@@ -90,13 +97,13 @@
         doTransition(ui.value);
       }
     });
-  // heatmap radius slider
-     $( "#heatmap_radius_slider" ).slider({
-       min:10,
-       max:100,
-       step:10,
-       value:50
-     });
+    // heatmap radius slider
+    $( "#heatmap_radius_slider" ).slider({
+      min:10,
+      max:100,
+      step:10,
+      value:50
+    });
 
     // Play button and loop controls
     var isPlaying = false;
@@ -129,11 +136,6 @@
     
   }); // end of async json load
 
-  var width = 960, height = 800;
-
-  var svg = d3.select("#map").append("svg")
-                             .attr("width", width)
-                             .attr("height", height);
   $("#animate").click(function(){
       $(".earth").addClass("earth-animate");
   });
@@ -148,10 +150,6 @@
   });
 
   var points = [];
-  var projection = d3.geo.mercator()
-                          .center([0, 56.0])
-                          .scale(2250)
-                          .translate([width / 2, height / 2]);
 
   var p1 = projection([0, 55]);
   var p2 = projection([1, 55]);
@@ -168,31 +166,22 @@
   };
   points.push(point1);
   points.push(point2);
-var newdata = {
-  max: 100,
-  data: points
-};
+  var newdata = {
+    max: 100,
+    data: points
+  };
 
+  heatmapInstance.setData(newdata) ;
 
-heatmapInstance.setData(newdata) ;
-
-$( "#heatmap_radius_slider" ).on( "slidechange",
-      function( event, ui ) {
-
-        $(".heatmap-canvas").remove() ;
-
-        var heatmapInstance2 = h337.create({
-            container: document.getElementById('map'),
-            radius:ui.value,
-            maxOpacity: 0.5,
-            minOpacity:0,
-            blur: .75
-           });
-        heatmapInstance2.setData(newdata) ;
-
-       } );
-
-
-
-
+  $( "#heatmap_radius_slider" ).on( "slidechange", function( event, ui ) {
+    $(".heatmap-canvas").remove();
+    var heatmapInstance2 = h337.create({
+        container: document.getElementById('map'),
+        radius:ui.value,
+        maxOpacity: 0.5,
+        minOpacity:0,
+        blur: .75
+    });
+    heatmapInstance2.setData(newdata) ;
+  });
 })();
