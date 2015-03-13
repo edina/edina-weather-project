@@ -70,43 +70,6 @@
         doTransition(ui.value);
       });
       
-      // Play button and loop controls
-      var isPlaying = false;
-      var loop = $("#loop");
-      var sliderPlayback = null;
-      $("#play").on('click', function(btn) {
-        if ( isPlaying ) {
-          return;
-        }
-
-        isPlaying = true;
-        var i = 0;
-        sliderPlayback = window.setInterval(function() {
-
-          slider.slider("value", i);
-          setTime(i);
-          doTransition(slider.slider("value"));
-          doHeatMap(slider.slider("value"));
-          i++;
-
-          if ( i === slider.slider( 'option', 'max' ) + 1 ) {
-            if ( loop.prop('checked') ) {
-              i = 0;
-            }
-            else {
-              window.clearInterval( sliderPlayback );
-              isPlaying = false;
-            }
-          }
-        }, 500);
-      });
-      $("#stop").on('click', function(btn) {
-        if ( sliderPlayback != null ) {
-          window.clearInterval(sliderPlayback);
-        }
-        isPlaying = false;
-      });
-      
       // Load wind data
       d3.json("data/cloudcover.json", function(error, data) {
         if (error) return console.error(error);
