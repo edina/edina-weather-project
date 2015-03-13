@@ -50,8 +50,8 @@ var eclipseShadow = function(map, projection, sliderElement) {
 
     $(sliderElement).on('slide', function(event, ui) {
         var index;
-        var centralTimes = eclipseData.features[1].properties.times;
-        var centralCoords = eclipseData.features[1].geometry.coordinates;
+        var centralTimes = eclipseData.features[2].properties.times;
+        var centralCoords = eclipseData.features[2].geometry.coordinates;
         var currentTime = ui.value;
 
         index = findValueInRange(currentTime, centralTimes);
@@ -62,7 +62,7 @@ var eclipseShadow = function(map, projection, sliderElement) {
                 projection,
                 centralCoords[index][1],
                 centralCoords[index][0],
-                50
+                70
             );
         }
     });
