@@ -4,7 +4,6 @@
 /* global $: false */
 var eclipseShadow = function(map, projection, sliderElement) {
     'use strict';
-    var eclipseData; // it holds the geojson data
 
     var renderEclipsePath = function(map, projection, eclipsePath) {
         var path = d3.geo.path().projection(projection);
@@ -19,14 +18,21 @@ var eclipseShadow = function(map, projection, sliderElement) {
             .attr('d', path);
     };
 
-    var renderUmbra = function(map, projection, latitude, longitude, radius) {
-        var coordinates = projection([longitude, latitude]);
+    var newUmbra = function(map, projection) {
+        var umbra = map.append('svg:circle');
 
-        map
-            .append('svg:circle')
-            .attr('cx', coordinates[0])
-            .attr('cy', coordinates[1])
-            .attr('r', radius);
+        var translate = function(latitude, longitude, radius) {
+            var coordinates = projection([longitude, latitude]);
+            umbra
+                .attr('r', radius)
+                .attr(
+                'transform',
+                'translate(' + coordinates[0] + ',' + coordinates[1] + ')');
+        };
+
+        return {
+            translate: translate
+        };
     };
 
     var findValueInRange = function(value, range) {
@@ -40,31 +46,29 @@ var eclipseShadow = function(map, projection, sliderElement) {
 
     var loadEclipsePath = $.getJSON('data/2015_eclipse_path.json');
     loadEclipsePath.done(function(data) {
-        eclipseData = data;
+        var eclipseData = data;
+        var umbra = newUmbra(map, projection);
 
+        // Render the path for the eclipse
         renderEclipsePath(map, projection, data);
+
+        // Bing the translation to the slider
+        $(sliderElement).on('slide', function(event, ui) {
+            var index;
+            var centralTimes = eclipseData.features[2].properties.times;
+            var centralCoords = eclipseData.features[2].geometry.coordinates;
+            var currentTime = ui.value;
+
+            index = findValueInRange(currentTime, centralTimes);
+
+            if (index > 0) {
+                umbra.translate(centralCoords[index][1], centralCoords[index][0], 70);
+            }
+        });
     });
+
     loadEclipsePath.error(function(err) {
         console.error(err);
-    });
-
-    $(sliderElement).on('slide', function(event, ui) {
-        var index;
-        var centralTimes = eclipseData.features[2].properties.times;
-        var centralCoords = eclipseData.features[2].geometry.coordinates;
-        var currentTime = ui.value;
-
-        index = findValueInRange(currentTime, centralTimes);
-
-        if (index > 0) {
-            renderUmbra(
-                map,
-                projection,
-                centralCoords[index][1],
-                centralCoords[index][0],
-                70
-            );
-        }
     });
 };
 

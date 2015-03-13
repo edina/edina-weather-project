@@ -3,7 +3,22 @@
     { "x": -1, "y": 58, "icon": "sunny" },
     { "x": 1, "y": 54, "icon": "overcast" }
   ],[
-    { "x": -1, "y": 58, "icon": "overcast" },
-    { "x": 1, "y": 54, "icon": "cloudy" }
+    { "x": -2, "y": 58, "icon": "overcast" },
+    { "x": 0, "y": 54, "icon": "cloudy" }
+  ],[
+    { "x": -2, "y": 58, "icon": "overcast" },
+    { "x": 0, "y": 54, "icon": "cloudy" }
+  ],[
+    { "x": -2, "y": 58, "icon": "overcast" },
+    { "x": 0, "y": 54, "icon": "cloudy" }
+  ],[
+    { "x": -2, "y": 58, "icon": "overcast" },
+    { "x": 0, "y": 54, "icon": "cloudy" }
+  ],[
+    { "x": -2, "y": 58, "icon": "overcast" },
+    { "x": 0, "y": 54, "icon": "cloudy" }
+  ],[
+    { "x": -2, "y": 58, "icon": "overcast" },
+    { "x": 0, "y": 54, "icon": "cloudy" }
   ]]
 }

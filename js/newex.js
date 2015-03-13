@@ -100,8 +100,26 @@
             var point = data.cloud[value][i];
             var coord = projection([point.x, point.y]);
             return 'translate(' + coord[0] + ',' + coord[1] + ')';
+          }).attr('d', function(d, i) {
+            var point = data.cloud[value][i];
+            return symbols.getSymbol(point.icon, 64);
+          })
+          .attr('stroke', '#333')
+          .attr('fill', function(d, i) {
+            var point = data.cloud[value][i];
+            if ( point.icon === 'sunny' ) {
+              return '#de0';
+            }
+            else {
+              return '#aaa';
+            }
           });
+
         }
+        
+        slider.on('slide', function(event, ui) {
+          doTransitionCloud(ui.value);
+        });
 
       }); // end of async cloud data
     }); // end of async wind data
