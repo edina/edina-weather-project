@@ -75,6 +75,7 @@
         slide: function( event, ui ) {
           setTime(ui.value);
           doTransition(ui.value);
+          doHeatMap(ui.value);
         }
       });
       // heatmap radius slider
@@ -100,9 +101,10 @@
           slider.slider("value", i);
           setTime(i);
           doTransition(slider.slider("value"));
+          doHeatMap(slider.slider("value"));
           i++;
 
-          if ( i == data.length ) {
+          if ( i == data.wind.length ) {
             if ( loop.prop('checked') ) {
               i = 0;
             }
@@ -123,7 +125,7 @@
   var heatmapInstance = h337.create({
   // only container is required, the rest will be defaults
     container: document.getElementById('map'),
-    radius:50,
+    radius: 50,
     maxOpacity: 0.5,
     minOpacity:0,
     blur: .75
@@ -153,15 +155,15 @@
 
   heatmapInstance.setData(newdata) ;
 
-  $( "#heatmap_radius_slider" ).on( "slidechange", function( event, ui ) {
+  function doHeatMap( value ) {
     $(".heatmap-canvas").remove();
     var heatmapInstance2 = h337.create({
         container: document.getElementById('map'),
-        radius:ui.value,
+        radius: value * 10,
         maxOpacity: 0.5,
-        minOpacity:0,
+        minOpacity: 0,
         blur: .75
     });
     heatmapInstance2.setData(newdata) ;
-  });
+  };
 })();
