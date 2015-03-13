@@ -57,18 +57,52 @@
         .attr('fill', '#aaa')
         .attr('stroke', '#333');
 
-    $( "#slider" ).slider({
+    // Moves the symbols on the map
+    function doTransition( value ) {
+      symb.transition().attr('transform', function(d, i) {
+        var point = data[value][i];
+        var coord = projection([point.x, point.y]);
+        return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + point.rotation + ') scale(' + point.size + ')';
+      });
+    }
+    
+    // Timeline slider
+    var slider = $( "#slider" ).slider({
       range: "max",
       min: 0,
       max: 6,
       value: 0,
       slide: function( event, ui ) {
-        symb.transition().attr('transform', function(d, i) {
-          var point = data[ui.value][i];
-          var coord = projection([point.x, point.y]);
-          return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + point.rotation + ') scale(' + point.size + ')';
-        });
+        doTransition(ui.value);
       }
+    });
+
+    // Play button and loop controls
+    var isPlaying = false;
+    var loop = $("#loop");
+    $("#play").click(function(btn) {
+      if ( isPlaying ) {
+        return;
+      }
+      
+      isPlaying = true;
+      var i = 0;
+      var sliderPlayback = window.setInterval(function() {
+        
+        slider.slider("value", i);
+        doTransition(slider.slider("value"));
+        i++;
+        
+        if ( i == data.length ) {
+          if ( loop.prop('checked') ) {
+            i = 0;
+          }
+          else {
+            window.clearInterval( sliderPlayback );
+            isPlaying = false;
+          }
+        }
+      }, 500);
     });
     
   }); // end of async json load
