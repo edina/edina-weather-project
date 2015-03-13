@@ -1,6 +1,18 @@
 (function() {
   $(function() {
-    $( "#slider" ).slider();
+    $( "#slider" ).slider({
+      min: 0,
+      max: 180,
+      step: 1,
+      slide: function(e, ui){
+        var hours = Math.floor(ui.value/60);
+        var minutes = ui.value - (hours * 60);
+        if(minutes === 0){
+          minutes = "00";
+        }
+        $("#time").html(8+hours+':'+minutes+' AM');
+      }
+    });
   });
 
   d3.json("gb8.json", function(error, uk) {
