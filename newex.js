@@ -89,6 +89,7 @@
       // Play button and loop controls
       var isPlaying = false;
       var loop = $("#loop");
+      var sliderPlayback = null;
       $("#play").click(function(btn) {
         if ( isPlaying ) {
           return;
@@ -96,7 +97,7 @@
 
         isPlaying = true;
         var i = 0;
-        var sliderPlayback = window.setInterval(function() {
+        sliderPlayback = window.setInterval(function() {
 
           slider.slider("value", i);
           setTime(i);
@@ -114,6 +115,12 @@
             }
           }
         }, 500);
+      });
+      $("#stop").click(function(btn) {
+        if ( sliderPlayback != null ) {
+          window.clearInterval(sliderPlayback);
+        }
+        isPlaying = false;
       });
     }); // end of async wind data
   }); // end of async map data
