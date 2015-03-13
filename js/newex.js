@@ -10,6 +10,19 @@
                           .scale(2250)
                           .translate([width / 2, height / 2]);
 
+  // Timeline slider
+  var slider = $( "#slider" ).slider({
+    range: "max",
+    min: 0,
+    max: 6,
+    value: 0
+  });
+  
+  slider.on('slide', function( event, ui ) {
+    setTime( ui.value );
+  });    
+
+  // Load the data
   d3.json("gb8.json", function(error, uk) {
     if (error) return console.error(error);
 
@@ -52,45 +65,16 @@
           return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + point.rotation + ') scale(' + point.size + ')';
         });
       }
-
-      function setTime(value) {
-        var hours = Math.floor(value/6);
-        var minutes = (value - (hours * 6)) * 10;
-        hours += 8;
-        if(minutes < 10) {
-          minutes = "0" + minutes;
-        }
-        if (hours < 10) {
-          hours = "0" + hours;
-        }
-        $("#time").html(hours + ':' + minutes);
-      }
-
-      // Timeline slider
-      var slider = $( "#slider" ).slider({
-        range: "max",
-        min: 0,
-        max: 6,
-        value: 0,
-        slide: function( event, ui ) {
-          setTime(ui.value);
-          doTransition(ui.value);
-          doHeatMap(ui.value);
-        }
+      
+      slider.on('slide', function( event, ui ) {
+        doTransition(ui.value);
       });
-      // heatmap radius slider
-      $( "#heatmap_radius_slider" ).slider({
-        min:10,
-        max:100,
-        step:10,
-        value:50
-      });
-
+      
       // Play button and loop controls
       var isPlaying = false;
       var loop = $("#loop");
       var sliderPlayback = null;
-      $("#play").click(function(btn) {
+      $("#play").on('click', function(btn) {
         if ( isPlaying ) {
           return;
         }
@@ -101,8 +85,8 @@
 
           slider.slider("value", i);
           setTime(i);
-          doTransition(slider.slider("value"));
-          doHeatMap(slider.slider("value"));
+          //doTransition(slider.slider("value"));
+          //doHeatMap(slider.slider("value"));
           i++;
 
           if ( i == data.wind.length ) {
@@ -116,7 +100,7 @@
           }
         }, 500);
       });
-      $("#stop").click(function(btn) {
+      $("#stop").on('click', function(btn) {
         if ( sliderPlayback != null ) {
           window.clearInterval(sliderPlayback);
         }
@@ -211,4 +195,10 @@
     });
     heatmapInstance2.setData(newdata) ;
   };
+  
+  slider.on('slide', function( event, ui ) {
+    doHeatMap(ui.value);
+  });
+
+
 })();
