@@ -1,28 +1,8 @@
 var averageCharts = (function () {
     'use strict';
 
-    function init() {
-        var data = [{
-            "creat_time": "2013-03-12 15:09:04",
-            "record_status": "ok",
-            "roundTripTime": "16"
-        }, {
-            "creat_time": "2013-03-12 14:59:06",
-            "record_status": "ok",
-            "roundTripTime": "0"
-        }, {
-            "creat_time": "2013-03-12 14:49:04",
-            "record_status": "ok",
-            "roundTripTime": "297"
-        }, {
-            "creat_time": "2013-03-12 14:39:06",
-            "record_status": "ok",
-            "roundTripTime": "31"
-        }, {
-            "creat_time": "2013-03-12 14:29:03",
-            "record_status": "ok",
-            "roundTripTime": "0"
-    }];
+
+    function createChart(data) {
         var margin = {
             top: 20,
             right: 20,
@@ -41,7 +21,7 @@ var averageCharts = (function () {
         var xAxis = d3.svg.axis()
             .scale(x)
             .orient("bottom")
-            .ticks(d3.time.minute, 10)
+            .ticks(d3.time.minute, 30)
             .tickFormat(d3.time.format("%H:%M"));
 
         var yAxis = d3.svg.axis()
@@ -50,11 +30,11 @@ var averageCharts = (function () {
 
         var line = d3.svg.line()
             .x(function (d) {
-                return x(d.creat_time);
+                return x(d.time);
             })
             .y(function (d) {
-                return y(d.roundTripTime);
-            });
+                return y(d.temp);
+            }).interpolate("basis");
 
 
         var svg = d3.select("svg")
@@ -64,15 +44,15 @@ var averageCharts = (function () {
             .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
         data.forEach(function (d) {
-            d.creat_time = parseDate(d.creat_time);
-            d.roundTripTime = +d.roundTripTime;
+            d.time = parseDate(d.time);
+            d.temp = +d.temp;
         });
 
         x.domain(d3.extent(data, function (d) {
-            return d.creat_time;
+            return d.time;
         }));
         y.domain(d3.extent(data, function (d) {
-            return d.roundTripTime;
+            return d.temp;
         }));
 
         svg.append("g")
@@ -88,7 +68,7 @@ var averageCharts = (function () {
             .attr("y", 6)
             .attr("dy", ".71em")
             .style("text-anchor", "end")
-            .text("return time(ms)");
+            .text("Temperature C");
 
         svg.append("path")
             .datum(data)
@@ -96,6 +76,19 @@ var averageCharts = (function () {
             .style("fill", "none")
             .style("stroke", "blue")
             .attr("d", line);
+
+
+    }
+    var init = function () {
+
+        var testdata = "testdata/temp.json";
+        $.getJSON(testdata)
+            .done(function (d) {
+                var data = d.temp;
+                createChart(data);
+            });
+
+
     }
     return {
         init: init
