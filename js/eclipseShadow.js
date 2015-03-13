@@ -30,8 +30,14 @@ var eclipseShadow = function(map, projection, sliderElement) {
                 'translate(' + coordinates[0] + ',' + coordinates[1] + ')');
         };
 
+        var hide = function() {
+            umbra
+                .attr('r', 0);
+        };
+
         return {
-            translate: translate
+            translate: translate,
+            hide: hide
         };
     };
 
@@ -63,6 +69,9 @@ var eclipseShadow = function(map, projection, sliderElement) {
 
             if (index > 0) {
                 umbra.translate(centralCoords[index][1], centralCoords[index][0], 70);
+            }
+            else {
+                umbra.hide();
             }
         });
     });
