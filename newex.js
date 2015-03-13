@@ -3,7 +3,7 @@
     $( "#slider" ).slider();
   });
 
-  d3.json("gb2.json", function(error, uk) {
+  d3.json("gb8.json", function(error, uk) {
     if (error) return console.error(error);
     console.log(uk);
 
