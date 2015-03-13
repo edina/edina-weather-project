@@ -26,20 +26,21 @@
         .attr("d", path);
 
     var data = [
-      { x: 50, y: 50, rotation: 20, size: 5 },
-      { x: 75, y: 75, rotation: 40, size: 10 },
+      { x: 0.5, y: 55, rotation: 20, size: 5 },
+      { x: -0.5, y: 56, rotation: 40, size: 10 },
     ];
     
     var symb = svg.selectAll('.symb')
       .data(data)
       .enter().append('path')
         .attr('transform', function(d,i) {
-          return 'translate(' + d.x + ',' + d.y + ') rotate(' + d.rotation + ')';
+          var coord = projection([d.x, d.y]);
+          return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + d.rotation + ')';
         })
         .attr('d', function(d) {
           return symbols.getSymbol('wind', 128);
         })
-        .attr('fill', 'transparent')
+        .attr('fill', '#aaa')
         .attr('stroke', '#333');
     
       }); // end of async json load
