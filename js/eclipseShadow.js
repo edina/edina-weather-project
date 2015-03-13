@@ -56,7 +56,6 @@ var eclipseShadow = function(map, projection, sliderElement) {
 
         index = findValueInRange(currentTime, centralTimes);
 
-        console.debug(currentTime, index);
         if (index > 0) {
             renderUmbra(
                 map,
