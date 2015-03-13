@@ -1,0 +1,60 @@
+div.eclipse{
+    background:#000000;
+    width: 100%;
+    height:300px;
+}
+
+div.sun{
+    position:absolute; 
+    top:200px; 
+    left:50%; 
+    margin-left:-10px; 
+    background:#fff25e; 
+    width:20px; 
+    height:20px;
+
+    border-radius:20px;
+    -moz-border-radius:20px;
+    -webkit-border-radius:20px;
+
+    box-shadow:0 0 10px #fff25e;
+    -moz-box-shadow:0 0 10px #fff25e;
+    -webkit-box-shadow:0 0 10px #fff25e;
+
+    transition: all 2s ease-out;
+    -o-transition: all 2s ease-out;
+    -moz-transition: all 2s ease-out;
+    -webkit-transition: all 2s ease-out;
+}
+
+div.earth{
+    position:absolute;
+    top:190px;
+    left:50px;
+    width:50px; 
+    height:50px; 
+    /*opacity:0.2;*/
+    background:url('images/earth.png');
+    background-color: #000000;
+    
+    
+    box-shadow: inset 0px 0px 10px #ffffff;
+    -moz-box-shadow: inset 0px 0px 10px #ffffff;
+    -webkit-box-shadow: inset 0px 0px 10px #ffffff;
+    
+    border-radius:50px;
+    -moz-border-radius:50px;
+    -webkit-border-radius:50px;
+}
+
+div.eclipse div.earth-animate{
+    transition: all 10s ease-out;
+    -o-transition: all 10s ease-out;
+    -moz-transition: all 10s ease-out;
+    -webkit-transition: all 10s ease-out;
+    -webkit-transform: translateX(500px);
+    -moz-transform: translateX(500px);
+    -o-transform: translateX(500px);
+    -ms-transform: translateX(500px);
+    transform: translateX(500px);
+}

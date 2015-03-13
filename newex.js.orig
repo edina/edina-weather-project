@@ -1,4 +1,5 @@
 (function() {
+<<<<<<< HEAD
   var data = [[
     { x: 0.5, y: 55, rotation: 20, size: 1.5 },
     { x: -0.5, y: 56, rotation: 40, size: 1 },
@@ -20,7 +21,25 @@
   ],[
     { x: -0.5, y: 54, rotation: 260, size: 1.1 },
     { x: -2.3, y: 57, rotation: 20, size: 0.7 },
-  ]];
+  ]];    
+=======
+  $(function() {
+    $( "#slider" ).slider({
+      min: 0,
+      max: 180,
+      step: 1,
+      slide: function(e, ui){
+        var hours = Math.floor(ui.value/60);
+        var minutes = ui.value - (hours * 60);
+        console.log(minutes.length)
+        if(minutes < 10){
+          minutes = "0"+minutes;
+        }
+        $("#time").html(8+hours+':'+minutes+' AM');
+      }
+    });
+  });
+>>>>>>> 72b2d3a65d83534a20d45e97b47f05e1122b6746
 
   d3.json("gb8.json", function(error, uk) {
     if (error) return console.error(error);
@@ -66,19 +85,6 @@
       });
     }
     
-    function setTime(value) {
-      var hours = Math.floor(value/6);
-      var minutes = (value - (hours * 6)) * 10;
-      hours += 8;
-      if(minutes < 10) {
-        minutes = "0" + minutes;
-      }
-      if (hours < 10) {
-        hours = "0" + hours;
-      }
-      $("#time").html(hours + ':' + minutes);
-    }
-    
     // Timeline slider
     var slider = $( "#slider" ).slider({
       range: "max",
@@ -86,7 +92,6 @@
       max: 6,
       value: 0,
       slide: function( event, ui ) {
-        setTime(ui.value);
         doTransition(ui.value);
       }
     });
@@ -104,7 +109,6 @@
       var sliderPlayback = window.setInterval(function() {
         
         slider.slider("value", i);
-        setTime(i);
         doTransition(slider.slider("value"));
         i++;
         
@@ -124,11 +128,18 @@
 
   var width = 960, height = 800;
 
+<<<<<<< HEAD
   var svg = d3.select("#map").append("svg")
                              .attr("width", width)
                              .attr("height", height);
-  $("#animate").click(function(){
-      $(".earth").addClass("earth-animate");
-  });
+=======
+    var svg = d3.select("#map").append("svg")
+                             .attr("width", width)
+                             .attr("height", height);
 
+    $("#animate").click(function(){
+        $(".earth").addClass("earth-animate");
+    });
+
+>>>>>>> 72b2d3a65d83534a20d45e97b47f05e1122b6746
 })();
