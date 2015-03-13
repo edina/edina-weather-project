@@ -4,7 +4,7 @@
   var svg = d3.select("#map").append("svg")
                              .attr("width", width)
                              .attr("height", height);
-  
+
   var projection = d3.geo.mercator()
                           .center([0, 56.0])
                           .scale(2250)
@@ -26,7 +26,7 @@
         .enter().append("path")
         .attr("class", function(d) { return "gb"; })
         .attr("d", path);
-    
+
     // Load wind data
     d3.json("wind.json", function(error, data) {
       if (error) return console.error(error);
@@ -158,6 +158,9 @@
 
       }); // end of async cloud data
     }); // end of async wind data
+
+    // Put the shadow elements in the map
+    eclipseShadow(svg, projection, slider);
   }); // end of async map data
 
   $("#animate").click(function(){
