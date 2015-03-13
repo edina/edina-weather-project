@@ -31,7 +31,8 @@ var eclipseShadow = function(map, projection, sliderElement) {
 
     var findTimeInTimes = function(time, times) {
         for (var i =  1, len = times.length - 1; i < len; i++) {
-            if (times[i] > times[i - 1] && times[i] >= times[i + 1]) {
+            console.debug(time, times[i - 1]);
+            if (time >= times[i - 1] && time < times[i]) {
                 return i - 1;
             }
         }
@@ -44,7 +45,6 @@ var eclipseShadow = function(map, projection, sliderElement) {
         eclipseData = data;
 
         renderEclipsePath(map, projection, data);
-        //
     });
     loadEclipsePath.error(function(err) {
         console.error(err);
@@ -58,12 +58,13 @@ var eclipseShadow = function(map, projection, sliderElement) {
 
         index = findTimeInTimes(currentTime, centralTimes);
 
+        console.debug(currentTime, index);
         if (index > 0) {
             renderUmbra(
                 map,
                 projection,
-                centralCoords[index][0],
                 centralCoords[index][1],
+                centralCoords[index][0],
                 50
             );
         }
