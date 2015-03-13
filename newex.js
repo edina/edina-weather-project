@@ -122,6 +122,41 @@
         }
         isPlaying = false;
       });
+      
+      // Load wind data
+      d3.json("cloudcover.json", function(error, data) {
+        if (error) return console.error(error);
+
+        var symb = svg.selectAll('.symb')
+          .data(data.cloud[0])
+          .enter().append('path')
+            .attr('transform', function(d,i) {
+              var coord = projection([d.x, d.y]);
+              return 'translate(' + coord[0] + ',' + coord[1] + ')';
+            })
+            .attr('d', function(d) {
+              return symbols.getSymbol(d.icon, 64);
+            })
+            .attr('stroke', '#333')
+            .attr('fill', function(d) {
+              if ( d.icon === 'sunny' ) {
+                return '#de0';
+              }
+              else {
+                return '#aaa';
+              }
+            });
+        
+              // Moves the symbols on the map
+        function doTransitionCloud( value ) {
+          symb.transition().attr('transform', function(d, i) {
+            var point = data.cloud[value][i];
+            var coord = projection([point.x, point.y]);
+            return 'translate(' + coord[0] + ',' + coord[1] + ')';
+          });
+        }
+
+      }); // end of async cloud data
     }); // end of async wind data
   }); // end of async map data
 

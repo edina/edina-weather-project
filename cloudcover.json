@@ -1,0 +1,9 @@
+{
+  "cloud": [[
+    { "x": -1, "y": 58, "icon": "sunny" },
+    { "x": 1, "y": 54, "icon": "overcast" }
+  ],[
+    { "x": -1, "y": 58, "icon": "overcast" },
+    { "x": 1, "y": 54, "icon": "cloudy" }
+  ]]
+}
