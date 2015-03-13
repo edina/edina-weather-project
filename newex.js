@@ -11,7 +11,8 @@
 
     var projection = d3.geo.mercator()
                           .center([0, 56.0])
-                          .scale(2250)
+                          //.scale(2250)
+                          .scale(1200)
                           .translate([width / 2, height / 2]);
     var path = d3.geo.path().projection(projection);
 
@@ -29,7 +30,7 @@
       { x: 0.5, y: 55, rotation: 20, size: 1.5 },
       { x: -0.5, y: 56, rotation: 40, size: 1 },
     ];
-    
+
     var symb = svg.selectAll('.symb')
       .data(data)
       .enter().append('path')
@@ -42,7 +43,22 @@
         })
         .attr('fill', '#aaa')
         .attr('stroke', '#333');
-    
+
+        /* Eclipse Path */
+        var renderEclipsePath = function(eclipsePath) {
+            svg
+                .selectAll('.geojson').data([eclipsePath])
+                .enter()
+                .append('path')
+                .attr('class', 'geojson')
+                .attr('fill', 'none')
+                .attr('stroke', 'black')
+                .attr('d', path);
+        };
+
+        var loadEclipsePath = $.getJSON('2015_eclipse_path.json');
+        loadEclipsePath.done(renderEclipsePath);
+
       }); // end of async json load
 
       var width = 960, height = 800;
