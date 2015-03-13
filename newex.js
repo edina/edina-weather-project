@@ -47,7 +47,13 @@
 
       var width = 960, height = 800;
 
-      var svg = d3.select("#map").append("svg")
-                                 .attr("width", width)
-                                 .attr("height", height);
+    var svg = d3.select("#map").append("svg")
+                             .attr("width", width)
+                             .attr("height", height);
+
+    $("#animate").click(function(){
+        console.log('xxxxxx')
+        $(".earth").addClass("earth-animate");
+    });
+
 })();
