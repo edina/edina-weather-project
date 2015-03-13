@@ -90,6 +90,13 @@
         doTransition(ui.value);
       }
     });
+  // heatmap radius slider
+     $( "#heatmap_radius_slider" ).slider({
+       min:10,
+       max:100,
+       step:10,
+       value:50
+     });
 
     // Play button and loop controls
     var isPlaying = false;
@@ -130,5 +137,62 @@
   $("#animate").click(function(){
       $(".earth").addClass("earth-animate");
   });
+
+  var heatmapInstance = h337.create({
+  // only container is required, the rest will be defaults
+    container: document.getElementById('map'),
+    radius:50,
+    maxOpacity: 0.5,
+    minOpacity:0,
+    blur: .75
+  });
+
+  var points = [];
+  var projection = d3.geo.mercator()
+                          .center([0, 56.0])
+                          .scale(2250)
+                          .translate([width / 2, height / 2]);
+
+  var p1 = projection([0, 55]);
+  var p2 = projection([1, 55]);
+
+  var point1 = {
+    x: p1[0],
+    y: p1[1],
+    value: 50
+  };
+  var point2 = {
+    x: p2[0],
+    y: p2[1],
+    value: 30
+  };
+  points.push(point1);
+  points.push(point2);
+var newdata = {
+  max: 100,
+  data: points
+};
+
+
+heatmapInstance.setData(newdata) ;
+
+$( "#heatmap_radius_slider" ).on( "slidechange",
+      function( event, ui ) {
+
+        $(".heatmap-canvas").remove() ;
+
+        var heatmapInstance2 = h337.create({
+            container: document.getElementById('map'),
+            radius:ui.value,
+            maxOpacity: 0.5,
+            minOpacity:0,
+            blur: .75
+           });
+        heatmapInstance2.setData(newdata) ;
+
+       } );
+
+
+
 
 })();
