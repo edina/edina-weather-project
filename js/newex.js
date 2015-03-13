@@ -20,7 +20,7 @@
   
   slider.on('slide', function( event, ui ) {
     setTime( ui.value );
-  });    
+  });
 
   // Load the data
   d3.json("gb8.json", function(error, uk) {
@@ -85,11 +85,11 @@
 
           slider.slider("value", i);
           setTime(i);
-          //doTransition(slider.slider("value"));
-          //doHeatMap(slider.slider("value"));
+          doTransition(slider.slider("value"));
+          doHeatMap(slider.slider("value"));
           i++;
 
-          if ( i == data.wind.length ) {
+          if ( i === slider.slider( 'option', 'max' ) + 1 ) {
             if ( loop.prop('checked') ) {
               i = 0;
             }
