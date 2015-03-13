@@ -26,8 +26,8 @@
         .attr("d", path);
 
     var data = [
-      { x: 0.5, y: 55, rotation: 20, size: 5 },
-      { x: -0.5, y: 56, rotation: 40, size: 10 },
+      { x: 0.5, y: 55, rotation: 20, size: 1.5 },
+      { x: -0.5, y: 56, rotation: 40, size: 1 },
     ];
     
     var symb = svg.selectAll('.symb')
@@ -35,10 +35,10 @@
       .enter().append('path')
         .attr('transform', function(d,i) {
           var coord = projection([d.x, d.y]);
-          return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + d.rotation + ')';
+          return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + d.rotation + ') scale(' + d.size + ')';
         })
         .attr('d', function(d) {
-          return symbols.getSymbol('wind', 128);
+          return symbols.getSymbol('wind', d.size);
         })
         .attr('fill', '#aaa')
         .attr('stroke', '#333');
