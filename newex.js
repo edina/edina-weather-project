@@ -15,52 +15,38 @@
                           .translate([width / 2, height / 2]);
     var path = d3.geo.path().projection(projection);
 
-//    svg.append("path")
-//       .datum(gb)
-//       .attr("d", path);
-//
-//    svg.selectAll(".subunit")
-//        .data(topojson.feature(uk, uk.objects.gb).features)
-//        .enter().append("path")
-//        .attr("class", function(d) { return "gb"; })
-//        .attr("d", path);
+    svg.append("path")
+       .datum(gb)
+       .attr("d", path);
+
+    svg.selectAll(".subunit")
+        .data(topojson.feature(uk, uk.objects.gb).features)
+        .enter().append("path")
+        .attr("class", function(d) { return "gb"; })
+        .attr("d", path);
 
     var data = [
-      { x : 50, y : 50 }
+      { x: 50, y: 50, rotation: 20, size: 5 },
+      { x: 75, y: 75, rotation: 40, size: 10 },
     ];
-    //var iconGroup = svg.append("g").append("transform", "translate(50, 50)");
     
-    svg.select("#map").data(data).enter()
-       .append("line")
-       .attr("x1", function(d) {
-         return "translate(" + projection(d.x) + ")";
-       })
-       .attr("y1", function(d) {
-         return "translate(" + projection(d.y) + ")";
-       })
-       .attr("x2", function(d) {
-         return "translate(" + projection(d.x + 50) + ")";
-       })
-       .attr("y2", function(d) {
-         return "translate(" + projection(d.y + 50) + ")";
-       })
-       .attr("stroke-width", 2)
-       .attr("stroke", "black");
+    var symb = svg.selectAll('.symb')
+      .data(data)
+      .enter().append('path')
+        .attr('transform', function(d,i) {
+          return 'translate(' + d.x + ',' + d.y + ')';
+        })
+        .attr('d', function(d) {
+          return symbols.getSymbol('wind', 128);
+        })
+        .attr('fill', 'transparent')
+        .attr('stroke', '#333');
     
-    //var p1 = projection([0, 55]);
-//    var p2 = projection([1, 55]);
-    /*
-    iconGroup.append("line").attr("x1", 0)
-                      .attr("y1", 0)
-                      .attr("x2", 50)
-                      .attr("y2", 50)
-                      .attr("stroke-width", 2)
-                      .attr("stroke", "black");*/
-  });
+      }); // end of async json load
 
-  var width = 960, height = 800;
+      var width = 960, height = 800;
 
-  var svg = d3.select("#map").append("svg")
-                             .attr("width", width)
-                             .attr("height", height);
+      var svg = d3.select("#map").append("svg")
+                                 .attr("width", width)
+                                 .attr("height", height);
 })();
