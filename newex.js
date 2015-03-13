@@ -34,7 +34,7 @@
       .data(data)
       .enter().append('path')
         .attr('transform', function(d,i) {
-          return 'translate(' + d.x + ',' + d.y + ')';
+          return 'translate(' + d.x + ',' + d.y + ') rotate(' + d.rotation + ')';
         })
         .attr('d', function(d) {
           return symbols.getSymbol('wind', 128);
