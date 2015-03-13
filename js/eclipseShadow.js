@@ -29,14 +29,12 @@ var eclipseShadow = function(map, projection, sliderElement) {
             .attr('r', radius);
     };
 
-    var findTimeInTimes = function(time, times) {
-        for (var i =  1, len = times.length - 1; i < len; i++) {
-            console.debug(time, times[i - 1]);
-            if (time >= times[i - 1] && time < times[i]) {
+    var findValueInRange = function(value, range) {
+        for (var i =  1, len = range.length - 1; i < len; i++) {
+            if (value >= range[i - 1] && value < range[i]) {
                 return i - 1;
             }
         }
-
         return -1;
     };
 
@@ -56,7 +54,7 @@ var eclipseShadow = function(map, projection, sliderElement) {
         var centralCoords = eclipseData.features[1].geometry.coordinates;
         var currentTime = ui.value;
 
-        index = findTimeInTimes(currentTime, centralTimes);
+        index = findValueInRange(currentTime, centralTimes);
 
         console.debug(currentTime, index);
         if (index > 0) {
