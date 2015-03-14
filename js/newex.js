@@ -74,6 +74,7 @@
       d3.json("data/cloudcover.json", function(error, data) {
         if (error) return console.error(error);
 
+        
         var symb = svg.selectAll('.symb')
           .data(data.cloud[0])
           .enter().append('path')
@@ -81,12 +82,12 @@
               var coord = projection([d.x, d.y]);
               return 'translate(' + coord[0] + ',' + coord[1] + ')';
             })
-            .attr('d', function(d) {
+            .attr('d', function(d) { // d is svg path attr
               return symbols.getSymbol(d.icon, 64);
             })
             .attr('stroke', '#333')
             .attr('fill', function(d) {
-              if ( d.icon === 'sunny' ) {
+              if ( d.icon === 'sun' ) {
                 return '#de0';
               }
               else {
@@ -107,7 +108,7 @@
           .attr('stroke', '#333')
           .attr('fill', function(d, i) {
             var point = data.cloud[value][i];
-            if ( point.icon === 'sunny' ) {
+            if ( point.icon === 'sun' ) {
               return '#de0';
             }
             else {
