@@ -14,7 +14,7 @@
   var slider = $( "#slider" ).slider({
     range: "max",
     min: 0,
-    max: 6,
+    max: 18,
     value: 0
   });
   
@@ -180,6 +180,35 @@
   
   slider.on('slide', function( event, ui ) {
     doHeatMap(ui.value);
+  });
+
+  function setTime(value) {
+    //not used
+    var getUnixTime = function(hours, minutes){
+      var date = new Date(2015, 2, 20, 8, 0);
+      return date.getTime()/1000|0;
+    }
+    var getDate = function(hours,minutes){
+      return new Date(2015, 2, 20, hours, minutes, 0, 0);
+    };
+    var hours = Math.floor(value/6);
+    var minutes = (value - (hours * 6)) * 10;
+    hours += 8;
+    $("#time").html(getDate(hours, minutes).toString());
+  }
+
+  var eclipseWidth = $(".eclipse").width();
+  console.log(eclipseWidth)
+  console.log((eclipseWidth - 100)/18)
+  var step = Math.floor((eclipseWidth - 100)/18)
+  function animateEclipse(value) {
+    var s = 100 + (step * value);
+    console.log(s)
+    $(".earth").animate({right: s})
+  }
+
+  slider.on('slide', function( event, ui ) {
+    animateEclipse(ui.value);
   });
 
 
