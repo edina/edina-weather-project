@@ -119,7 +119,7 @@
           .attr('fill', function(d, i) {
             return transformCloudFill( 0, d, i );
         });
-        
+
         function transformCloud( value, d, i ) {
           var point = data.data[value][i];
           var p = latLongProj.toGlobalLatLong(point.Northing * 70000, point.Easting * 65000);

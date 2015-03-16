@@ -4,18 +4,39 @@
 /* global $: false */
 var eclipseShadow = function(map, projection, sliderElement, layerControlElement) {
     'use strict';
-    var eclisePathClass = 'eclipsePath';
+    var eclisePathClass = 'eclipse-path';
+    var ecliseShadowClass = 'eclipse-shadow';
 
     var renderEclipsePath = function(map, projection, eclipsePath) {
         var path = d3.geo.path().projection(projection);
 
         map
-            .selectAll('.geojson').data([eclipsePath])
+            .selectAll(eclisePathClass)
+            .data([eclipsePath])
             .enter()
             .append('path')
             .attr('class', eclisePathClass)
             .attr('fill', 'none')
             .attr('stroke', 'black')
+            .attr('d', path);
+    };
+
+    var renderEclipseShadow = function(map, projection, eclipseShadow) {
+        var path = d3.geo.path().projection(projection);
+        map
+            .selectAll(ecliseShadowClass)
+            .data(eclipseShadow.features)
+            .enter()
+            .append('path')
+            .attr('class', ecliseShadowClass)
+            .attr('fill', function(d) {
+                var maxAlpha = 0.1;
+                var magnitude = parseFloat(d.properties['magnitude_max']);
+                var rgba = 'rgba(0,0,0,' + (maxAlpha * magnitude.toFixed(2)) + ')';
+
+                console.debug((maxAlpha * magnitude).toFixed(2));
+                return rgba;
+            })
             .attr('d', path);
     };
 
@@ -52,26 +73,34 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
     };
 
     var addLayerControls = function() {
-        var checkboxTemplate = (
-            '<div class="checkbox disabled">' +
-                '<label><input type="checkbox" checked value="path">Eclipse Path</label>' +
+        var pathControlTemplate = (
+            '<div class="checkbox">' +
+                '<label><input type="checkbox" checked value="' + eclisePathClass + '">Eclipse Path</label>' +
+            '</div>'
+        );
+
+        var shadowControlTemplate = (
+            '<div class="checkbox">' +
+                '<label><input type="checkbox" checked value="' + ecliseShadowClass + '">Eclipse Maximum Shadow</label>' +
             '</div>'
         );
 
         $(layerControlElement)
-            .append(checkboxTemplate)
+            .append(pathControlTemplate)
+            .append(shadowControlTemplate)
             .find('input')
             .on('change', function(evt) {
-                var checked = evt.currentTarget.checked;
-                if (checked) {
-                    $('.' + eclisePathClass).show();
+                var control = evt.currentTarget;
+                console.debug(control.val);
+                if (control.checked) {
+                    $('.' + control.value).show();
                 }else {
-                    $('.' + eclisePathClass).hide();
+                    $('.' + control.value).hide();
                 }
             });
     };
 
-    var loadEclipsePath = $.getJSON('data/2015_eclipse_path.json');
+    var loadEclipsePath = $.getJSON('data/2015_eclipse_path.geojson');
     loadEclipsePath.done(function(data) {
         var eclipseData = data;
         var umbra = newUmbra(map, projection);
@@ -100,8 +129,19 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
         addLayerControls();
     });
 
-    loadEclipsePath.error(function(err) {
-        console.error(err);
+    loadEclipsePath.error(function(err, errCode, errText) {
+        console.error(errText);
+    });
+
+    // Load the data for the eclipse shadow
+    var loadEclipseShadow = $.getJSON('data/2015_eclipse_max_shadow.geojson');
+    loadEclipseShadow.done(function(data) {
+        // console.log(data);
+        renderEclipseShadow(map, projection, data);
+    });
+
+    loadEclipseShadow.error(function(err, errCode, errText) {
+        console.error(errText);
     });
 };
 
