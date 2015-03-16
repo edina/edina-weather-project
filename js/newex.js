@@ -1,7 +1,7 @@
 (function() {
 
     // Show/hide layer visibility
-    $('#layers').on('click', function (e) {
+    var layers = $('#layers').on('click', function (e) {
         // event handler
         var value = e.target.value;
         if (value === 'temperature') {
@@ -13,7 +13,7 @@
             $('.clouds').toggle();
         }
     });
-  
+
   var windSymbol = {
     halfWidth: 16,
     halfHeight: 16,
@@ -39,11 +39,11 @@
     max: 18,
     value: 0
   });
-  
+
   slider.on('slide', function( event, ui ) {
     setTime( ui.value );
   });
-  
+
   var latLongProj = new Edina.EPSG_27700();
 
   // Load the data
@@ -87,7 +87,7 @@
           return transformWind( value, d, i );
         });
       };
-      
+
       function transformWind( value, d, i ) {
         var point = data.data[value][i];
         var p = latLongProj.toGlobalLatLong(point.Northing * 70000, point.Easting * 65000);
@@ -98,11 +98,11 @@
         coord = [coord[0] - (windSymbol.halfWidth * scaleFactor), coord[1] - (windSymbol.halfHeight * scaleFactor)];
         return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + rotation + ' ' + rotationTransform[0] + ' ' + rotationTransform[1] + ') scale(' + scaleFactor + ')';
       }
-      
+
       slider.on('slide', function( event, ui ) {
         doTransition(ui.value);
       });
-      
+
       // Load cloud data
 
         var cloudSymb = svg.selectAll('.symb')
@@ -165,7 +165,7 @@
             return transformCloudFill( value, d, i );
           });
         }
-        
+
         slider.on('slide', function(event, ui) {
           doTransitionCloud(ui.value);
         });
@@ -175,7 +175,7 @@
     }); // end of async wind data
 
     // Put the shadow elements in the map
-    eclipseShadow(svg, projection, slider);
+    eclipseShadow(svg, projection, slider, layers);
   }); // end of async map data
 
   $("#animate").click(function(){
@@ -231,7 +231,7 @@
         $('.heatmap-canvas').toggle();
     }
   };
-  
+
   slider.on('slide', function( event, ui ) {
     doHeatMap(ui.value);
   });
