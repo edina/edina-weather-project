@@ -1,4 +1,19 @@
 (function() {
+
+    // Show/hide layer visibility
+    $('#layers').on('click', function (e) {
+        // event handler
+        var value = e.target.value;
+        if (value === 'temperature') {
+            $('.heatmap-canvas').toggle();
+        }
+        else if( value === 'wind') {
+            $('.wind').toggle();
+        }else if(value === 'cloud') {
+            $('.clouds').toggle();
+        }
+    });
+
   var width = 960, height = 800;
 
   var svg = d3.select("#map").append("svg")
@@ -55,6 +70,7 @@
             return symbols.getSymbol('wind', d.size);
           })
           .attr('fill', '#aaa')
+          .attr('class', 'wind')
           .attr('stroke', '#333');
 
       // Moves the symbols on the map
@@ -86,6 +102,7 @@
               return symbols.getSymbol(d.icon, 64);
             })
             .attr('stroke', '#333')
+            .attr('class', 'clouds')
             .attr('fill', function(d) {
               if ( d.icon === 'sun' ) {
                 return '#de0';
@@ -106,6 +123,7 @@
             return symbols.getSymbol(point.icon, 64);
           })
           .attr('stroke', '#333')
+          .attr('id', 'clouds')
           .attr('fill', function(d, i) {
             var point = data.cloud[value][i];
             if ( point.icon === 'sun' ) {
