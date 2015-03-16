@@ -30,9 +30,9 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
             .append('path')
             .attr('class', ecliseShadowClass)
             .attr('fill', function(d) {
-                var maxAlpha = 0.15;
+                var maxAlpha = 0.1;
                 var magnitude = parseFloat(d.properties['magnitude_max']);
-                var alpha = maxAlpha * magnitude.toFixed(2);
+                var alpha = maxAlpha * magnitude;
                 var rgba = 'rgba(0,0,0,' + alpha + ')';
 
                 return rgba;
