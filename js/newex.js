@@ -175,7 +175,58 @@
         slider.on('slide', function(event, ui) {
           doTransitionCloud(ui.value);
         });
+      
+        // Heatmap 
+      
+        doHeatMap( 0 );
+      
+        function doHeatMap( value ) {
 
+          var heatpoints = [] ;
+
+          d3.select("map")
+            .data = data.data[value]
+            .forEach(function(d,i) {
+              var temperature = d["Temperature"] ;
+              var northing = d["Northing"] ;
+              var easting = d["Easting"] ;
+              var p = latLongProj.toGlobalLatLong(northing * 70000, easting * 65000);
+              var coord = projection([p[1], p[0]]);
+              var heatpoint = {
+                x: coord[0],
+                y: coord[1],
+                value: temperature
+              };
+
+              heatpoints.push(heatpoint) ;
+          });
+
+          var newdata = {
+            max: 20,
+            data: heatpoints
+          };
+
+          $(".heatmap-canvas").remove();
+
+          var heatmapInstance2 = h337.create({
+            container: document.getElementById('map'),
+            radius: 65,
+            maxOpacity: 0.15,
+            minOpacity: 0,
+            blur: .75
+          });
+
+          heatmapInstance2.setData(newdata) ;
+
+          // Ensure the animation respects visibility checkbox
+          if (!$('#temperature').is(':checked')){
+              $('.heatmap-canvas').toggle();
+          }
+        };
+
+        slider.on('slide', function( event, ui ) {
+          doHeatMap(ui.value);
+        });
 
       //}); // end of async cloud data
     }); // end of async wind data
