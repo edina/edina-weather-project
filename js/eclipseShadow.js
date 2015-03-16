@@ -2,9 +2,9 @@
 /* global module: false */
 /* global define: false */
 /* global $: false */
-var eclipseShadow = function(map, projection, sliderElement) {
+var eclipseShadow = function(map, projection, sliderElement, layerControlElement) {
     'use strict';
-    var eclisePathClass = 'eclipsePath'
+    var eclisePathClass = 'eclipsePath';
 
     var renderEclipsePath = function(map, projection, eclipsePath) {
         var path = d3.geo.path().projection(projection);
@@ -52,16 +52,14 @@ var eclipseShadow = function(map, projection, sliderElement) {
     };
 
     var addLayerControls = function() {
-        var $div;
-        var checkboxTemplete = (
+        var checkboxTemplate = (
             '<div class="checkbox disabled">' +
                 '<label><input type="checkbox" checked value="path">Eclipse Path</label>' +
             '</div>'
         );
 
-        $div = $('#layers').append(checkboxTemplete);
-
-        $div
+        $(layerControlElement)
+            .append(checkboxTemplate)
             .find('input')
             .on('change', function(evt) {
                 var checked = evt.currentTarget.checked;
