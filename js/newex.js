@@ -12,6 +12,10 @@
         }else if(value === 'cloud') {
             $('.clouds').toggle();
         }
+        else if ( value === 'uk_mask' ) {
+          $('.uk_mask').toggle();
+          $('.uk_mask_outline').toggle();
+        }
     });
 
   var windSymbol = {
@@ -228,66 +232,29 @@
           doHeatMap(ui.value);
         });
 
-      //}); // end of async cloud data
+        // UK Mask
+        d3.json("data/uk_mask.json", function(error, uk) {
+          if (error) return console.error(error);
+
+          var uk_mask = topojson.feature(uk, uk.objects.uk_mask);
+
+          var path = d3.geo.path().projection(projection);
+
+          svg.append("path")
+             .datum(uk_mask)
+             .attr("d", path)
+
+          svg.selectAll(".subunit")
+              .data(topojson.feature(uk, uk.objects.uk_mask).features)
+              .enter().append("path")
+              .attr("class", function(d) { return "uk_mask"; })
+              .attr("d", path);
+        }); // end of async mask data
     }); // end of async wind data
 
     // Put the shadow elements in the map
     eclipseShadow(svg, projection, slider, layers);
   }); // end of async map data
-
-  var heatmapInstance = h337.create({
-  // only container is required, the rest will be defaults
-    container: document.getElementById('map'),
-    radius: 50,
-    maxOpacity: 0.5,
-    minOpacity:0,
-    blur: .75
-  });
-
-  var points = [];
-
-  var p1 = projection([0, 55]);
-  var p2 = projection([1, 55]);
-
-  var point1 = {
-    x: p1[0],
-    y: p1[1],
-    value: 50
-  };
-  var point2 = {
-    x: p2[0],
-    y: p2[1],
-    value: 30
-  };
-  points.push(point1);
-  points.push(point2);
-  var newdata = {
-    max: 100,
-    data: points
-  };
-
-  heatmapInstance.setData(newdata) ;
-
-  function doHeatMap( value ) {
-    $(".heatmap-canvas").remove();
-    var heatmapInstance2 = h337.create({
-        container: document.getElementById('map'),
-        radius: value * 10,
-        maxOpacity: 0.5,
-        minOpacity: 0,
-        blur: .75
-    });
-    heatmapInstance2.setData(newdata) ;
-
-    // Ensure the animation respects visibility checkbox
-    if (!$('#temperature').is(':checked')){
-        $('.heatmap-canvas').toggle();
-    }
-  };
-
-  slider.on('slide', function( event, ui ) {
-    doHeatMap(ui.value);
-  });
 
   eclipseAnimation(ANIMATION_MOVES, slider);
 
