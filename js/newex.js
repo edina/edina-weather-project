@@ -36,6 +36,8 @@
   slider.on('slide', function( event, ui ) {
     setTime( ui.value );
   });
+  
+  var latLongProj = new Edina.EPSG_27700();
 
   // Load the data
   d3.json("gb8.json", function(error, uk) {
@@ -56,15 +58,16 @@
         .attr("d", path);
 
     // Load wind data
-    d3.json("data/wind.json", function(error, data) {
+    d3.json("data/data.json", function(error, data) {
       if (error) return console.error(error);
 
       var symb = svg.selectAll('.symb')
-        .data(data.wind[0])
+        .data(data.data[0])
         .enter().append('path')
           .attr('transform', function(d,i) {
-            var coord = projection([d.x, d.y]);
-            return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + d.rotation + ') scale(' + d.size + ')';
+            var p = latLongProj.toGlobalLatLong(d.Northing * 70000, d.Easting * 65000);
+            var coord = projection([p[1], p[0]]);
+            return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + d["Wind Direction"] + ') scale(' + d["Wind Speed"]/100 + ')';
           })
           .attr('d', function(d) {
             return symbols.getSymbol('wind', d.size);
@@ -76,9 +79,10 @@
       // Moves the symbols on the map
       function doTransition( value ) {
         symb.transition().attr('transform', function(d, i) {
-          var point = data.wind[value][i];
-          var coord = projection([point.x, point.y]);
-          return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + point.rotation + ') scale(' + point.size + ')';
+          var point = data.data[value][i];
+          var p = latLongProj.toGlobalLatLong(point.Northing * 70000, point.Easting * 65000);
+          var coord = projection([p[1], p[0]]);
+          return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + point["Wind Direction"] + ') scale(' + point["Wind Speed"]/100 + ')';
         });
       }
       
@@ -86,25 +90,33 @@
         doTransition(ui.value);
       });
       
-      // Load wind data
-      d3.json("data/cloudcover.json", function(error, data) {
-        if (error) return console.error(error);
-
-        
-        var symb = svg.selectAll('.symb')
-          .data(data.cloud[0])
+      // Load cloud data
+        var s/*ymb = svg.selectAll('.symb')
+          .data(data.data[0])
           .enter().append('path')
             .attr('transform', function(d,i) {
-              var coord = projection([d.x, d.y]);
+              var p = latLongProj.toGlobalLatLong(d.Northing * 70000, d.Easting * 65000);
+              var coord = projection([p[1], p[0]]);
               return 'translate(' + coord[0] + ',' + coord[1] + ')';
             })
             .attr('d', function(d) { // d is svg path attr
-              return symbols.getSymbol(d.icon, 64);
+              var cover = d["Cloud Cover"];
+              var symbol = null;
+              if ( cover < 2 ) {
+                symbol = 'sun';
+              }
+              else if ( cover < 3 ) {
+                symbol = 'cloudy';
+              }
+              else {
+                symbol = 'rainy';
+              }
+              return symbols.getSymbol(symbol, 64);
             })
             .attr('stroke', '#333')
             .attr('class', 'clouds')
             .attr('fill', function(d) {
-              if ( d.icon === 'sun' ) {
+              if ( d["Cloud Cover"] < 2 ) {
                 return '#de0';
               }
               else {
@@ -115,18 +127,30 @@
               // Moves the symbols on the map
         function doTransitionCloud( value ) {
           symb.transition().attr('transform', function(d, i) {
-            var point = data.cloud[value][i];
-            var coord = projection([point.x, point.y]);
+            var point = data.data[value][i];
+            var p = latLongProj.toGlobalLatLong(point.Northing * 70000, point.Easting * 65000);
+            var coord = projection([p[1], p[0]]);
             return 'translate(' + coord[0] + ',' + coord[1] + ')';
           }).attr('d', function(d, i) {
-            var point = data.cloud[value][i];
-            return symbols.getSymbol(point.icon, 64);
+            var point = data.data[value][i];
+            var cover = point["Cloud Cover"];
+            var symbol = null;
+            if ( cover < 2 ) {
+              symbol = 'sun';
+            }
+            else if ( cover < 3 ) {
+              symbol = 'cloudy';
+            }
+            else {
+              symbol = 'rainy';
+            }
+            return symbols.getSymbol(symbol, 64);
           })
           .attr('stroke', '#333')
           .attr('id', 'clouds')
           .attr('fill', function(d, i) {
-            var point = data.cloud[value][i];
-            if ( point.icon === 'sun' ) {
+            var point = data.data[value][i];
+            if ( point["Cloud Cover"] < 2 ) {
               return '#de0';
             }
             else {
@@ -138,9 +162,9 @@
         
         slider.on('slide', function(event, ui) {
           doTransitionCloud(ui.value);
-        });
+        });*/
 
-      }); // end of async cloud data
+      //}); // end of async cloud data
     }); // end of async wind data
 
     // Put the shadow elements in the map
