@@ -5,7 +5,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
     <script src="http://d3js.org/d3.v3.min.js" charset="utf-8"></script>
-    <script src="js/avg_charts.js"></script>
+    <script src="js/avg_charts_bar.js"></script>
     <style>
         .axis text {
             font-family: Lato;
@@ -19,19 +19,29 @@
             shape-rendering: crispEdges;
         }
     </style>
+    <script>
+        $(document).ready(function () {
+            var charts = averageCharts;
+            charts.init();
+            $("#testHighlight").click(function () {
+                var time = "2015-03-20 08:30:00";
+                charts.highlightTime(time);
+            });
+        });
+    </script>
+
 </head>
 
 <body>
-    <div class="container">
-        <div class="jumbotron">
-            <svg id="visualisation" width="1000" height="500"></svg>
-            <script>
-                var charts = averageCharts;
-                charts.init();
-            </script>
+    <div>
+        <div>
+
 
         </div>
     </div>
+    <input id="testHighlight" type="submit" value="Highlight 8.30" />
+
+    <div id="slider"></div>
 </body>
 
 </html>
