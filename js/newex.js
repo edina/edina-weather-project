@@ -91,7 +91,7 @@
       });
       
       // Load cloud data
-        var s/*ymb = svg.selectAll('.symb')
+        var symb = svg.selectAll('.symb')
           .data(data.data[0])
           .enter().append('path')
             .attr('transform', function(d,i) {
@@ -162,7 +162,7 @@
         
         slider.on('slide', function(event, ui) {
           doTransitionCloud(ui.value);
-        });*/
+        });
 
       //}); // end of async cloud data
     }); // end of async wind data
