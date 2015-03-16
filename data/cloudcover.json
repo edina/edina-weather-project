@@ -1,7 +1,7 @@
 {
   "cloud": [[
     { "x": -2, "y": 58, "icon": "rainy"},
-      { "x": 0, "y": 54, "icon": "sun" }
+      { "x": 0, "y": 54, "icon": "overcast" }
   ],[
     { "x": -2, "y": 58, "icon": "rainy" },
     { "x": 0, "y": 54, "icon": "sun" }
