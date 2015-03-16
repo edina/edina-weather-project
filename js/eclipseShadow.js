@@ -4,6 +4,7 @@
 /* global $: false */
 var eclipseShadow = function(map, projection, sliderElement) {
     'use strict';
+    var eclisePathClass = 'eclipsePath'
 
     var renderEclipsePath = function(map, projection, eclipsePath) {
         var path = d3.geo.path().projection(projection);
@@ -12,7 +13,7 @@ var eclipseShadow = function(map, projection, sliderElement) {
             .selectAll('.geojson').data([eclipsePath])
             .enter()
             .append('path')
-            .attr('class', 'geojson')
+            .attr('class', eclisePathClass)
             .attr('fill', 'none')
             .attr('stroke', 'black')
             .attr('d', path);
@@ -50,6 +51,28 @@ var eclipseShadow = function(map, projection, sliderElement) {
         return -1;
     };
 
+    var addLayerControls = function() {
+        var $div;
+        var checkboxTemplete = (
+            '<div class="checkbox disabled">' +
+                '<label><input type="checkbox" checked value="path">Eclipse Path</label>' +
+            '</div>'
+        );
+
+        $div = $('#layers').append(checkboxTemplete);
+
+        $div
+            .find('input')
+            .on('change', function(evt) {
+                var checked = evt.currentTarget.checked;
+                if (checked) {
+                    $('.' + eclisePathClass).show();
+                }else {
+                    $('.' + eclisePathClass).hide();
+                }
+            });
+    };
+
     var loadEclipsePath = $.getJSON('data/2015_eclipse_path.json');
     loadEclipsePath.done(function(data) {
         var eclipseData = data;
@@ -74,6 +97,9 @@ var eclipseShadow = function(map, projection, sliderElement) {
                 umbra.hide();
             }
         });
+
+        // Add the layer controls
+        addLayerControls();
     });
 
     loadEclipsePath.error(function(err) {
