@@ -15,9 +15,10 @@
     });
   
   var windSymbol = {
-    halfWidth: 32,
-    halfHeight: 50,
-    scale: 100
+    halfWidth: 16,
+    halfHeight: 16,
+    scale: 40,
+    orientation: 90
   };
 
   var width = 960, height = 800;
@@ -91,10 +92,11 @@
         var point = data.data[value][i];
         var p = latLongProj.toGlobalLatLong(point.Northing * 70000, point.Easting * 65000);
         var scaleFactor = point["Wind Speed"] / windSymbol.scale;
-        var rotation = [windSymbol.halfWidth * scaleFactor, windSymbol.halfHeight * scaleFactor];
+        var rotationTransform = [windSymbol.halfWidth * scaleFactor, windSymbol.halfHeight * scaleFactor];
+        var rotation = (point["Wind Direction"] + windSymbol.orientation) % 360;
         var coord = projection([p[1], p[0]]);
         coord = [coord[0] - (windSymbol.halfWidth * scaleFactor), coord[1] - (windSymbol.halfHeight * scaleFactor)];
-        return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + point["Wind Direction"] + ' ' + rotation[0] + ' ' + rotation[1] + ') scale(' + scaleFactor + ')';
+        return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + rotation + ' ' + rotationTransform[0] + ' ' + rotationTransform[1] + ') scale(' + scaleFactor + ')';
       }
       
       slider.on('slide', function( event, ui ) {

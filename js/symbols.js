@@ -32,7 +32,7 @@ var symbols = (function() {
         ' a' + r + ',' + r + ' 0 1,0' + (r * 2) + ',0' +
         ' a' + r + ',' + r + ' 0 1,0' + (-(r * 2)) + ',0' +
 
-        'M' + (-size/2) + ',' + ((size/2)-(2*pad)) +
+      'M' + (-size/2) + ',' + ((size/2)-(2*pad)) +
         'q' + (size/2) + ',' + (pad*2) + ' ' + size + ',0';
       },
       wind: function(size) {
@@ -40,7 +40,7 @@ var symbols = (function() {
           
         if(! windPath.length > 0 )  
         {
-            windPath = symbols.scaleSymbol(1, 'M 134,242.36218 L 104,227.36218 L 134,212.36218 L 124,227.36218 L 134,242.36218 z') ;
+            windPath = symbols.scaleSymbol(1, 'M31,31 L1,16 L31,1 L21,16 L31,31 Z"') ;
         }
           
         return windPath ;  
