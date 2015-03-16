@@ -104,79 +104,72 @@
       });
       
       // Load cloud data
-/*
-        var symb = svg.selectAll('.symb')
+
+        var cloudSymb = svg.selectAll('.symb')
           .data(data.data[0])
           .enter().append('path')
-            .attr('transform', function(d,i) {
-              var p = latLongProj.toGlobalLatLong(d.Northing * 70000, d.Easting * 65000);
-              var coord = projection([p[1], p[0]]);
-              return 'translate(' + coord[0] + ',' + coord[1] + ')';
-            })
-            .attr('d', function(d) { // d is svg path attr
-              var cover = d["Cloud Cover"];
-              var symbol = null;
-              if ( cover < 2 ) {
-                symbol = 'sun';
-              }
-              else if ( cover < 3 ) {
-                symbol = 'cloudy';
-              }
-              else {
-                symbol = 'rainy';
-              }
-              return symbols.getSymbol(symbol, 64);
-            })
-            .attr('stroke', '#333')
-            .attr('class', 'clouds')
-            .attr('fill', function(d) {
-              if ( d["Cloud Cover"] < 2 ) {
-                return '#de0';
-              }
-              else {
-                return '#aaa';
-              }
-            });
+          .attr('transform', function(d,i) {
+            return transformCloud( 0, d, i );
+          })
+          .attr('d', function(d, i) { // d is svg path attr
+            return transformCloudPath( 0, d, i );
+          })
+          .attr('stroke', '#333')
+          .attr('class', 'clouds')
+          .attr('fill', function(d, i) {
+            return transformCloudFill( 0, d, i );
+        });
         
+        function transformCloud( value, d, i ) {
+          var point = data.data[value][i];
+          var p = latLongProj.toGlobalLatLong(point.Northing * 70000, point.Easting * 65000);
+          var coord = projection([p[1], p[0]]);
+          return 'translate(' + coord[0] + ',' + coord[1] + ')';
+        };
+        function transformCloudPath( value, d, i ) {
+          var point = data.data[value][i];
+          var cover = point["Cloud Cover"];
+          var symbol = null;
+          if ( cover < 2 ) {
+            symbol = 'sun';
+          }
+          else if ( cover < 3 ) {
+            symbol = 'overcast';
+          }
+          else if ( cover < 4 ) {
+            symbol = 'cloudy';
+          }
+          else {
+            symbol = 'rainy';
+          }
+          return symbols.getSymbol(symbol, 64);
+        };
+        function transformCloudFill( value, d, i ) {
+          var point = data.data[value][i];
+          if ( point["Cloud Cover"] < 2 ) {
+            return '#de0';
+          }
+          else {
+            return '#aaa';
+          }
+        };
               // Moves the symbols on the map
         function doTransitionCloud( value ) {
-          symb.transition().attr('transform', function(d, i) {
-            var point = data.data[value][i];
-            var p = latLongProj.toGlobalLatLong(point.Northing * 70000, point.Easting * 65000);
-            var coord = projection([p[1], p[0]]);
-            return 'translate(' + coord[0] + ',' + coord[1] + ')';
+          cloudSymb.transition().attr('transform', function(d, i) {
+            return transformCloud( value, d, i );
           }).attr('d', function(d, i) {
-            var point = data.data[value][i];
-            var cover = point["Cloud Cover"];
-            var symbol = null;
-            if ( cover < 2 ) {
-              symbol = 'sun';
-            }
-            else if ( cover < 3 ) {
-              symbol = 'cloudy';
-            }
-            else {
-              symbol = 'rainy';
-            }
-            return symbols.getSymbol(symbol, 64);
+            return transformCloudPath( value, d, i );
           })
           .attr('stroke', '#333')
           .attr('fill', function(d, i) {
-            var point = data.data[value][i];
-            if ( point["Cloud Cover"] < 2 ) {
-              return '#de0';
-            }
-            else {
-              return '#aaa';
-            }
+            return transformCloudFill( value, d, i );
           });
-
         }
         
         slider.on('slide', function(event, ui) {
           doTransitionCloud(ui.value);
         });
-*/
+
 
       //}); // end of async cloud data
     }); // end of async wind data
