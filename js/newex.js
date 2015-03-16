@@ -123,9 +123,10 @@
           })
           .attr('stroke', '#333')
           .attr('class', 'clouds')
-          .attr('fill', function(d, i) {
-            return transformCloudFill( 0, d, i );
-        });
+          .attr('style', function(d, i) {
+              return transformCloudFill( 0, d, i );
+         });
+        
 
         function transformCloud( value, d, i ) {
           var point = data.data[value][i];
@@ -133,6 +134,8 @@
           var coord = projection([p[1], p[0]]);
           return 'translate(' + coord[0] + ',' + coord[1] + ')';
         };
+        
+        
         function transformCloudPath( value, d, i ) {
     
             if( ! (i== 27 || i== 35 || i == 58 || i == 75 || i == 43 || i == 106 || i == 134 || i==175  ) )   {return null ;} 
@@ -157,10 +160,17 @@
         function transformCloudFill( value, d, i ) {
           var point = data.data[value][i];
           if ( point["Cloud Cover"] < 2 ) {
-            return '#de0';
+            return 'fill:yellow';
           }
+          else if ( point["Cloud Cover"] < 3 ) {
+            return 'fill:white';
+          }
+         else if ( point["Cloud Cover"]  < 4 ) {
+            return 'fill:black';
+          }
+            
           else {
-            return '#aaa';
+            return 'fill:blue';
           }
         };
               // Moves the symbols on the map
@@ -171,8 +181,11 @@
             return transformCloudPath( value, d, i );
           })
           .attr('stroke', '#333')
-          .attr('fill', function(d, i) {
-            return transformCloudFill( value, d, i );
+        //  .attr('fill', function(d, i) {
+        //    return transformCloudFill( value, d, i );
+          .attr('style', function(d, i) {
+              return transformCloudFill( value, d, i );
+        
           }).duration(1) // hides the messy transform between shapes;
         }
 
