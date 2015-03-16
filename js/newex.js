@@ -169,7 +169,7 @@
           .attr('stroke', '#333')
           .attr('fill', function(d, i) {
             return transformCloudFill( value, d, i );
-          });
+          }).duration(1) // hides the messy transform between shapes;
         }
 
         slider.on('slide', function(event, ui) {
