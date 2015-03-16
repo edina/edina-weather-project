@@ -40,7 +40,7 @@ var symbols = (function() {
           
         if(! windPath.length > 0 )  
         {
-            windPath = symbols.scaleSymbol(0.5, 'M 134,242.36218 L 104,227.36218 L 134,212.36218 L 124,227.36218 L 134,242.36218 z') ;
+            windPath = symbols.scaleSymbol(1, 'M 134,242.36218 L 104,227.36218 L 134,212.36218 L 124,227.36218 L 134,242.36218 z') ;
         }
           
         return windPath ;  
