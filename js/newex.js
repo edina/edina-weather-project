@@ -22,6 +22,7 @@
   };
 
   var width = 960, height = 800;
+  var ANIMATION_MOVES = 18;
 
   var svg = d3.select("#map").append("svg")
                              .attr("width", width)
@@ -36,7 +37,7 @@
   var slider = $( "#slider" ).slider({
     range: "max",
     min: 0,
-    max: 18,
+    max: ANIMATION_MOVES,
     value: 0
   });
 
@@ -89,14 +90,16 @@
       };
 
       function transformWind( value, d, i ) {
-        var point = data.data[value][i];
-        var p = latLongProj.toGlobalLatLong(point.Northing * 70000, point.Easting * 65000);
-        var scaleFactor = point["Wind Speed"] / windSymbol.scale;
-        var rotationTransform = [windSymbol.halfWidth * scaleFactor, windSymbol.halfHeight * scaleFactor];
-        var rotation = (point["Wind Direction"] + windSymbol.orientation) % 360;
-        var coord = projection([p[1], p[0]]);
-        coord = [coord[0] - (windSymbol.halfWidth * scaleFactor), coord[1] - (windSymbol.halfHeight * scaleFactor)];
-        return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + rotation + ' ' + rotationTransform[0] + ' ' + rotationTransform[1] + ') scale(' + scaleFactor + ')';
+        if(value < data.data.length){
+          var point = data.data[value][i];
+          var p = latLongProj.toGlobalLatLong(point.Northing * 70000, point.Easting * 65000);
+          var scaleFactor = point["Wind Speed"] / windSymbol.scale;
+          var rotation = [windSymbol.halfWidth * scaleFactor, windSymbol.halfHeight * scaleFactor];
+          var coord = projection([p[1], p[0]]);
+          coord = [coord[0] - (windSymbol.halfWidth * scaleFactor), coord[1] - (windSymbol.halfHeight * scaleFactor)];
+          return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + point["Wind Direction"] + ' ' + rotation[0] + ' ' + rotation[1] + ') scale(' + scaleFactor + ')';
+        }
+        return;
       }
 
       slider.on('slide', function( event, ui ) {
@@ -127,6 +130,9 @@
           return 'translate(' + coord[0] + ',' + coord[1] + ')';
         };
         function transformCloudPath( value, d, i ) {
+    
+            if( ! (i== 27 || i== 35 || i == 58 || i == 75 || i == 43 || i == 106 || i == 134 || i==175  ) )   {return null ;} 
+            
           var point = data.data[value][i];
           var cover = point["Cloud Cover"];
           var symbol = null;
@@ -163,7 +169,7 @@
           .attr('stroke', '#333')
           .attr('fill', function(d, i) {
             return transformCloudFill( value, d, i );
-          });
+          }).duration(1) // hides the messy transform between shapes;
         }
 
         slider.on('slide', function(event, ui) {
@@ -177,10 +183,6 @@
     // Put the shadow elements in the map
     eclipseShadow(svg, projection, slider, layers);
   }); // end of async map data
-
-  $("#animate").click(function(){
-      $(".earth").addClass("earth-animate");
-  });
 
   var heatmapInstance = h337.create({
   // only container is required, the rest will be defaults
@@ -236,34 +238,6 @@
     doHeatMap(ui.value);
   });
 
-  function setTime(value) {
-    //not used
-    var getUnixTime = function(hours, minutes){
-      var date = new Date(2015, 2, 20, 8, 0);
-      return date.getTime()/1000|0;
-    }
-    var getDate = function(hours,minutes){
-      return new Date(2015, 2, 20, hours, minutes, 0, 0);
-    };
-    var hours = Math.floor(value/6);
-    var minutes = (value - (hours * 6)) * 10;
-    hours += 8;
-    $("#time").html(getDate(hours, minutes).toString());
-  }
-
-  var eclipseWidth = $(".eclipse").width();
-  console.log(eclipseWidth)
-  console.log((eclipseWidth - 100)/18)
-  var step = Math.floor((eclipseWidth - 100)/18)
-  function animateEclipse(value) {
-    var s = 100 + (step * value);
-    console.log(s)
-    $(".earth").animate({right: s})
-  }
-
-  slider.on('slide', function( event, ui ) {
-    animateEclipse(ui.value);
-  });
-
+  eclipseAnimation(ANIMATION_MOVES, slider);
 
 })();

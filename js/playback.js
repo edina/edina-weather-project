@@ -1,10 +1,11 @@
 (function() {
   var slider = $('#slider');
   // Play button and loop controls
-  var isPlaying = false;
+  isPlaying = false;
   var loop = $("#loop");
   var sliderPlayback = null;
   $("#play").on('click', function(btn) {
+    var start = new Date().getTime();
     if ( isPlaying ) {
       return;
     }
@@ -24,9 +25,12 @@
         else {
           window.clearInterval( sliderPlayback );
           isPlaying = false;
+          var end = new Date().getTime();
+          var t = end - start;
+          console.log(t)
         }
       }
-    }, 500);
+    }, 1000);
   });
   $("#stop").on('click', function(btn) {
     if ( sliderPlayback != null ) {
