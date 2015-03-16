@@ -147,7 +147,6 @@
             return symbols.getSymbol(symbol, 64);
           })
           .attr('stroke', '#333')
-          .attr('id', 'clouds')
           .attr('fill', function(d, i) {
             var point = data.data[value][i];
             if ( point["Cloud Cover"] < 2 ) {
@@ -218,6 +217,11 @@
         blur: .75
     });
     heatmapInstance2.setData(newdata) ;
+
+    // Ensure the animation respects visibility checkbox
+    if (!$('#temperature').is(':checked')){
+        $('.heatmap-canvas').toggle();
+    }
   };
   
   slider.on('slide', function( event, ui ) {
