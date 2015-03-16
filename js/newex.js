@@ -127,6 +127,9 @@
           return 'translate(' + coord[0] + ',' + coord[1] + ')';
         };
         function transformCloudPath( value, d, i ) {
+    
+            if( ! (i== 27 || i== 35 || i == 58 || i == 75 || i == 43 || i == 106 || i == 134 || i==175  ) )   {return null ;} 
+            
           var point = data.data[value][i];
           var cover = point["Cloud Cover"];
           var symbol = null;
