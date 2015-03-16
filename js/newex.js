@@ -13,6 +13,12 @@
             $('.clouds').toggle();
         }
     });
+  
+  var windSymbol = {
+    halfWidth: 32,
+    halfHeight: 50,
+    scale: 100
+  };
 
   var width = 960, height = 800;
 
@@ -65,9 +71,7 @@
         .data(data.data[0])
         .enter().append('path')
           .attr('transform', function(d,i) {
-            var p = latLongProj.toGlobalLatLong(d.Northing * 70000, d.Easting * 65000);
-            var coord = projection([p[1], p[0]]);
-            return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + d["Wind Direction"] + ') scale(' + d["Wind Speed"]/100 + ')';
+            return transformWind( 0, d, i );
           })
           .attr('d', function(d) {
             return symbols.getSymbol('wind', d.size);
@@ -79,11 +83,18 @@
       // Moves the symbols on the map
       function doTransition( value ) {
         symb.transition().attr('transform', function(d, i) {
-          var point = data.data[value][i];
-          var p = latLongProj.toGlobalLatLong(point.Northing * 70000, point.Easting * 65000);
-          var coord = projection([p[1], p[0]]);
-          return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + point["Wind Direction"] + ') scale(' + point["Wind Speed"]/100 + ')';
+          return transformWind( value, d, i );
         });
+      };
+      
+      function transformWind( value, d, i ) {
+        var point = data.data[value][i];
+        var p = latLongProj.toGlobalLatLong(point.Northing * 70000, point.Easting * 65000);
+        var scaleFactor = point["Wind Speed"] / windSymbol.scale;
+        var rotation = [windSymbol.halfWidth * scaleFactor, windSymbol.halfHeight * scaleFactor];
+        var coord = projection([p[1], p[0]]);
+        coord = [coord[0] - (windSymbol.halfWidth * scaleFactor), coord[1] - (windSymbol.halfHeight * scaleFactor)];
+        return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + point["Wind Direction"] + ' ' + rotation[0] + ' ' + rotation[1] + ') scale(' + scaleFactor + ')';
       }
       
       slider.on('slide', function( event, ui ) {
@@ -91,6 +102,7 @@
       });
       
       // Load cloud data
+/*
         var symb = svg.selectAll('.symb')
           .data(data.data[0])
           .enter().append('path')
@@ -162,6 +174,7 @@
         slider.on('slide', function(event, ui) {
           doTransitionCloud(ui.value);
         });
+*/
 
       //}); // end of async cloud data
     }); // end of async wind data

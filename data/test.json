@@ -1,0 +1,36 @@
+{
+  "data": [[{
+    "Time":0,
+    "Wind Direction":180,
+    "Wind Speed":50,
+    "Temperature":4,
+    "Cloud Cover":2,
+    "Easting":3,
+    "Northing":10
+  }, {
+    "Time":0,
+    "Wind Direction":180,
+    "Wind Speed":100,
+    "Temperature":4,
+    "Cloud Cover":2,
+    "Easting":5,
+    "Northing":10
+  }], [
+  {
+    "Time":1,
+    "Wind Direction":90,
+    "Wind Speed":50,
+    "Temperature":8,
+    "Cloud Cover":1,
+    "Easting":3,
+    "Northing":10
+  },   {
+    "Time":1,
+    "Wind Direction":90,
+    "Wind Speed":100,
+    "Temperature":8,
+    "Cloud Cover":1,
+    "Easting":5,
+    "Northing":10
+  }]]
+}
