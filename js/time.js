@@ -24,4 +24,6 @@ function setTime(value) {
     var minutes = (value - (hours * 6)) * 10;
     hours += 8;
     $("#time").html(getDate(hours, minutes).toString());
+    var charts = averageCharts;
+    averageCharts.highlightTime(getDate(hours, minutes));
   }

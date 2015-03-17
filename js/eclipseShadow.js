@@ -30,9 +30,9 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
             .append('path')
             .attr('class', ecliseShadowClass)
             .attr('fill', function(d) {
-                var maxAlpha = 0.15;
+                var maxAlpha = 0.1;
                 var magnitude = parseFloat(d.properties['magnitude_max']);
-                var alpha = maxAlpha * magnitude.toFixed(2);
+                var alpha = maxAlpha * magnitude;
                 var rgba = 'rgba(0,0,0,' + alpha + ')';
 
                 return rgba;
@@ -100,6 +100,20 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
             });
     };
 
+    /**
+      * The slider return steps instead of unix time
+      * try to convert them to unix time
+    */
+    var intervalToUnixTime = function(value) {
+        var start = 1426838400;
+        var end = 1426849200;
+        var maxSlider = $(sliderElement).data().uiSlider.max;
+        var ratio = (end - start) / maxSlider;
+
+        console.debug((value * ratio) + start);
+        return start + (value * ratio);
+    };
+
     var loadEclipsePath = $.getJSON('data/2015_eclipse_path.geojson');
     loadEclipsePath.done(function(data) {
         var eclipseData = data;
@@ -113,7 +127,7 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
             var index;
             var centralTimes = eclipseData.features[2].properties.times;
             var centralCoords = eclipseData.features[2].geometry.coordinates;
-            var currentTime = ui.value;
+            var currentTime = intervalToUnixTime(ui.value);
 
             index = findValueInRange(currentTime, centralTimes);
 
