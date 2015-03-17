@@ -1,89 +1,104 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <script src="http://d3js.org/d3.v3.min.js"></script>
-    <script src="js/heatmap.js"></script>
-    <script src="http://d3js.org/topojson.v1.min.js"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
+<head>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="js/heatmap.js"></script>
+  <script src="http://d3js.org/topojson.v1.min.js"></script>
 
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.12/jquery.transit.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js"></script>
 
-    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css" />
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="eclipse.css" />
-    <style>
-      .gb { fill : #eee; }
-      .uk_mask { fill: #fff; }
-    </style>
-  </head>
-  <body>
-    <div class="container-fluid">
-      <h1>National Eclipse Weather Experiment</h1>
-      <div class="row">
-        <div class="col-md-6">
-          <div id="map"></div>
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery.transit/0.9.12/jquery.transit.min.js"></script>
+
+  <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/themes/smoothness/jquery-ui.css" />
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="eclipse.css" />
+  <link rel="stylesheet" href="charts.css" />
+  <style>
+    .gb {
+      fill: #eee;
+    }
+    
+    .uk_mask {
+      fill: #fff;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container-fluid">
+    <h1>National Eclipse Weather Experiment</h1>
+    <div class="row">
+      <div class="col-md-6">
+        <div id="map"></div>
+      </div>
+      <div class="col-md-5">
+        <div class="row">
+          <div class="eclipse">
+            <div id="sun" class="sun"></div>
+            <div id="earth" class="earth"></div>
+          </div>
         </div>
-        <div class="col-md-5">
-          <div class="row">
-            <div class="eclipse">
-              <div id="sun" class="sun"></div>
-              <div id="earth" class="earth"></div>
+        <div class="row">
+          <div class="col-md-12">
+            <h1>Timeline</h1>
+            <div id="slider"></div>
+            <br>
+            <div id="time">Fri Mar 20 2015 08:00:00 GMT+0000 (GMT)</div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-1">
+            <button id="play" class="btn btn-primary"><span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="col-md-1">
+            <button id="stop" class="btn btn-primary"><span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
+            </button>
+          </div>
+          <div class="col-md-4">
+            <div class="checkbox">
+              <label>
+                <input id="loop" type="checkbox"> Loop playback
+              </label>
             </div>
           </div>
-          <div class="row">
-            <div class="col-md-12">
-              <h1>Timeline</h1>
-              <div id="slider"></div>
-              <br>
-              <div id="time">Fri Mar 20 2015 08:00:00 GMT+0000 (GMT)</div>
-            </div>
+        </div>
+        <div class="row" id="layers">
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" checked value="wind">Wind</label>
           </div>
-          <div class="row">
-            <div class="col-md-1">
-              <button id="play" class="btn btn-primary"><span class="glyphicon glyphicon-play" aria-hidden="true"></span></button>
-            </div>
-            <div class="col-md-1">
-              <button id="stop" class="btn btn-primary"><span class="glyphicon glyphicon-stop" aria-hidden="true"></span></button>
-            </div>
-            <div class="col-md-4">
-              <div class="checkbox">
-                <label>
-                  <input id="loop" type="checkbox"> Loop playback
-                </label>
-              </div>
-            </div>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" id="temperature" checked value="temperature">Temperature</label>
           </div>
-          <div class="row" id="layers">
-              <div class="checkbox">
-                  <label><input type="checkbox" checked value="wind">Wind</label>
-              </div>
-              <div class="checkbox">
-                  <label><input type="checkbox" id="temperature" checked value="temperature">Temperature</label>
-              </div>
-              <div class="checkbox disabled">
-                  <label><input type="checkbox" checked value="cloud">Cloud Cover</label>
-              </div>
-              <div class="checkbox">
-                  <label><input type="checkbox" checked value="uk_mask">UK Mask</label>
-              </div>
-            </div>
+          <div class="checkbox disabled">
+            <label>
+              <input type="checkbox" checked value="cloud">Cloud Cover</label>
+          </div>
+          <div class="checkbox">
+            <label>
+              <input type="checkbox" checked value="uk_mask">UK Mask</label>
+          </div>
         </div>
       </div>
     </div>
+  </div>
 
-    <script>
-      var isPlaying;
-    </script>
-    <script src="js/time.js"></script>
-    <script src="js/playback.js"></script>
-    <script src="js/symbols.js"></script>
-    <script src="js/playback.js"></script>
-    <script src="js/coordomatic.js"></script>
-    <script type="text/javascript" src="js/eclipseShadow.js"></script>
-    <script type="text/javascript" src="js/eclipseAnimation.js"></script>
-    <script src="js/newex.js"></script>
-  </body>
+  <script>
+    var isPlaying;
+  </script>
+  <script src="js/time.js"></script>
+  <script src="js/playback.js"></script>
+  <script src="js/symbols.js"></script>
+  <script src="js/playback.js"></script>
+  <script src="js/coordomatic.js"></script>
+  <script type="text/javascript" src="js/eclipseShadow.js"></script>
+  <script type="text/javascript" src="js/eclipseAnimation.js"></script>
+  <script src="js/newex.js"></script>
+</body>
+
 </html>
