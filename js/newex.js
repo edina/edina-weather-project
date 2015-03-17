@@ -28,10 +28,20 @@
   var width = 960, height = 800;
   var ANIMATION_MOVES = 18;
 
+    
   var svg = d3.select("#map").append("svg")
                              .attr("width", width)
                              .attr("height", height);
-
+    
+                          
+ svg.append("foreignObject") 
+            .attr("width", width)
+            .attr("height", height)
+            .attr("id", "svgForeignObject");    
+      
+    
+    
+    
   var projection = d3.geo.mercator()
                           .center([0, 56.0])
                           .scale(2250)
@@ -51,6 +61,9 @@
 
   var latLongProj = new Edina.EPSG_27700();
 
+
+           
+    
   // Load the data
   d3.json("gb8.json", function(error, uk) {
     if (error) return console.error(error);
@@ -58,21 +71,50 @@
     var gb = topojson.feature(uk, uk.objects.gb);
 
     var path = d3.geo.path().projection(projection);
+    var path2 = d3.geo.path().projection(projection);
 
+      
     svg.append("path")
        .datum(gb)
        .attr("d", path);
 
+      
     svg.selectAll(".subunit")
         .data(topojson.feature(uk, uk.objects.gb).features)
         .enter().append("path")
         .attr("class", function(d) { return "gb"; })
         .attr("d", path);
+      
+      
+        var clipPath =  svg.append('clipPath')
+                             .attr('id','ukClipPath') ;
+                    
+          clipPath.append('path')
+                .datum(gb)
+                .attr('d', path2) ;
+        
+         svg.append("image")
+        .attr("width", "100%")
+        .attr("height", "100%")
+        .attr("clip-path", "url(#ukClipPath)")
+        .attr("id", "canvasImage" )
+        .attr("xlink:href", "images/earth.png") ; 
+  
+      
+      
+    
+       
+      
 
     // Load wind data
     d3.json("data/data.json", function(error, data) {
       if (error) return console.error(error);
 
+     // Heatmap 
+             
+        
+        doHeatMap(0) ;
+    
       var symb = svg.selectAll('.symb')
         .data(data.data[0])
         .enter().append('path')
@@ -85,6 +127,7 @@
           .attr('fill', '#aaa')
           .attr('class', 'wind')
           .attr('stroke', '#333');
+          
 
       // Moves the symbols on the map
       function doTransition( value ) {
@@ -121,6 +164,7 @@
           .attr('d', function(d, i) { // d is svg path attr
             return transformCloudPath( 0, d, i );
           })
+          .attr("clip-path", "url(#ukClipPath);")
           .attr('stroke', '#333')
           .attr('class', 'clouds')
           .attr('style', function(d, i) {
@@ -193,12 +237,13 @@
           doTransitionCloud(ui.value);
         });
       
-        // Heatmap 
-      
-        doHeatMap( 0 );
+       
+        
       
         function doHeatMap( value ) {
 
+          
+            
           var heatpoints = [] ;
 
           d3.select("map")
@@ -219,22 +264,31 @@
           });
 
           var newdata = {
-            max: 20,
+            max: 15,
             data: heatpoints
           };
 
           $(".heatmap-canvas").remove();
 
           var heatmapInstance2 = h337.create({
-            container: document.getElementById('map'),
-            radius: 65,
-            maxOpacity: 0.15,
+            container: document.getElementById('svgForeignObject'),
+            radius: 55,
+            maxOpacity: 0.4,
             minOpacity: 0,
             blur: .75
           });
-
+ 
           heatmapInstance2.setData(newdata) ;
-
+            
+          var canvas =   $(".heatmap-canvas") ;  
+          var canvasdataUrl = canvas[0].toDataURL() ;           
+          $(".heatmap-canvas").hide();    
+            
+        document.getElementById("canvasImage").setAttribute("href", canvasdataUrl);
+        
+        //    document.getElementById("canvasImage").setAttribute("clip-path", "url(#ukClipPath)");
+        
+            
           // Ensure the animation respects visibility checkbox
           if (!$('#temperature').is(':checked')){
               $('.heatmap-canvas').toggle();
@@ -243,28 +297,13 @@
 
         slider.on('slide', function( event, ui ) {
           doHeatMap(ui.value);
+            $('.heatmap-canvas').index = 0 ;
         });
 
-        // UK Mask
-        d3.json("data/uk_mask.json", function(error, uk) {
-          if (error) return console.error(error);
-
-          var uk_mask = topojson.feature(uk, uk.objects.uk_mask);
-
-          var path = d3.geo.path().projection(projection);
-
-          svg.append("path")
-             .datum(uk_mask)
-             .attr("d", path)
-
-          svg.selectAll(".subunit")
-              .data(topojson.feature(uk, uk.objects.uk_mask).features)
-              .enter().append("path")
-              .attr("class", function(d) { return "uk_mask"; })
-              .attr("d", path);
-        }); // end of async mask data
+         doHeatMap(0);
     }); // end of async wind data
 
+    
     // Put the shadow elements in the map
     eclipseShadow(svg, projection, slider, layers);
   }); // end of async map data
