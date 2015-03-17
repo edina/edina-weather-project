@@ -140,7 +140,7 @@ var averageCharts = (function () {
          
         var normalisedTempZeroToOne = d3.scale.linear().domain([minDataValue, maxDataValue]).range([0, 1]);
          var h = (1.0 - normalisedTempZeroToOne(d.temp) ) * 240
-          var color = "hsl(" + h + ", 100%, 50%)";  
+          var color = "hsl(" + h + ", 50%, 50%)";  
           var d3this = d3.select(this);
           if (d.time.getTime() === time.getTime()){
             d3this.style("fill", color)
