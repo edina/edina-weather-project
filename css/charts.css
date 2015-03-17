@@ -9,3 +9,8 @@
   stroke: black;
   shape-rendering: crispEdges;
 }
+
+#chart {
+  background-color: azure
+  
+}

@@ -3,6 +3,9 @@ var averageCharts = (function () {
 
   var svg;
   var parseDate;
+  
+  var maxDataValue;
+  var minDataValue;
 
   function createChart(data) {
     var margin = {
@@ -50,9 +53,16 @@ var averageCharts = (function () {
       return d.time;
     }));
 
-    y.domain(d3.extent(data, function (d) {
-      return d.temp;
-    }));
+
+    minDataValue = d3.min(data, function (d) {
+        return d.temp;
+      });
+    maxDataValue = d3.max(data, function (d) {
+        return d.temp;
+      });
+     y.domain([minDataValue, maxDataValue]);
+
+    
 
     svg.append("g")
       .attr("class", "x axis")
@@ -127,11 +137,19 @@ var averageCharts = (function () {
         .each(function (d, i) {
           // In here, d is the ordinal value associated with each tick
           // and 'this' is the dom element
+         
+        var normalisedTempZeroToOne = d3.scale.linear().domain([minDataValue, maxDataValue]).range([0, 1]);
+         var h = (1.0 - normalisedTempZeroToOne(d.temp) ) * 240
+          var color = "hsl(" + h + ", 100%, 50%)";  
           var d3this = d3.select(this);
           if (d.time.getTime() === time.getTime()){
-            d3this.style("fill", "red")
+            d3this.style("fill", color)
+            d3this.style("stroke", "black");
+            d3this.style("stroke-width", 5);
           } else {
-            d3this.style("fill", "blue")
+            d3this.style("fill", color);
+            d3this.style("stroke", "black");
+            d3this.style("stroke-width", 1);
           }
         })
 
