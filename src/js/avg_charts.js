@@ -21,7 +21,7 @@ var averageCharts = (function () {
         var xAxis = d3.svg.axis()
             .scale(x)
             .orient("bottom")
-            .ticks(5)
+            .ticks(d3.time.minute, 30)
             .tickFormat(d3.time.format("%H:%M"));
 
         var yAxis = d3.svg.axis()

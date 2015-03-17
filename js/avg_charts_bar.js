@@ -63,6 +63,7 @@ var averageCharts = (function () {
       .attr("dx", "-.8em")
       .attr("dy", "-.55em")
       .attr("transform", "rotate(-90)");
+    
 
     svg.append("g")
       .attr("class", "y axis")
@@ -121,14 +122,18 @@ var averageCharts = (function () {
     },
     highlightTime = function (time) {
       //convert to date
-      var t = parseDate(time);
+  
       svg.selectAll("rect")
-        .filter(function (d, i) {
+        .each(function (d, i) {
           // In here, d is the ordinal value associated with each tick
           // and 'this' is the dom element
-
-          return (d.time.getTime() === t.getTime())
-        }).style("fill", "red")
+          var d3this = d3.select(this);
+          if (d.time.getTime() === time.getTime()){
+            d3this.style("fill", "red")
+          } else {
+            d3this.style("fill", "blue")
+          }
+        })
 
 
     }
