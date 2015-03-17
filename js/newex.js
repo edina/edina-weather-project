@@ -5,7 +5,7 @@
         // event handler
         var value = e.target.value;
         if (value === 'temperature') {
-            $('.heatmap-canvas').toggle();
+            $('#canvasImage').toggle();
         }
         else if( value === 'wind') {
             $('.wind').toggle();
@@ -98,13 +98,8 @@
         .attr("height", "100%")
         .attr("clip-path", "url(#ukClipPath)")
         .attr("id", "canvasImage" )
-        .attr("xlink:href", "images/earth.png") ; 
-  
-      
-      
+        .attr("xlink:href", "") ; 
     
-       
-      
 
     // Load wind data
     d3.json("data/data.json", function(error, data) {
@@ -286,12 +281,10 @@
             
         document.getElementById("canvasImage").setAttribute("href", canvasdataUrl);
         
-        //    document.getElementById("canvasImage").setAttribute("clip-path", "url(#ukClipPath)");
-        
             
           // Ensure the animation respects visibility checkbox
           if (!$('#temperature').is(':checked')){
-              $('.heatmap-canvas').toggle();
+              $('#canvasImage').hide();
           }
         };
 
