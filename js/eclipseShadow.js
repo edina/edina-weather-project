@@ -10,7 +10,7 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
     var renderEclipsePath = function(map, projection, eclipsePath) {
         var path = d3.geo.path().projection(projection);
 
-        map
+        map.append('g')
             .selectAll(eclisePathClass)
             .data([eclipsePath])
             .enter()
@@ -23,14 +23,19 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
 
     var renderEclipseShadow = function(map, projection, eclipseShadow) {
         var path = d3.geo.path().projection(projection);
-        map
+
+        var topology = topojson.feature(eclipseShadow,
+                                        eclipseShadow
+                                            .objects['2015_eclipse_max_shadow']);
+
+        map.append('g')
             .selectAll(ecliseShadowClass)
-            .data(eclipseShadow.features)
+            .data(topology.features)
             .enter()
             .append('path')
             .attr('class', ecliseShadowClass)
             .attr('fill', function(d) {
-                var maxAlpha = 0.1;
+                var maxAlpha = 0.8;
                 var magnitude = parseFloat(d.properties['magnitude_max']);
                 var alpha = maxAlpha * magnitude;
                 var rgba = 'rgba(0,0,0,' + alpha + ')';
@@ -91,7 +96,7 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
             .find('input')
             .on('change', function(evt) {
                 var control = evt.currentTarget;
-                console.debug(control.val);
+
                 if (control.checked) {
                     $('.' + control.value).show();
                 }else {
@@ -110,7 +115,6 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
         var maxSlider = $(sliderElement).data().uiSlider.max;
         var ratio = (end - start) / maxSlider;
 
-        console.debug((value * ratio) + start);
         return start + (value * ratio);
     };
 
@@ -148,7 +152,7 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
     });
 
     // Load the data for the eclipse shadow
-    var loadEclipseShadow = $.getJSON('data/2015_eclipse_max_shadow.geojson');
+    var loadEclipseShadow = $.getJSON('data/2015_eclipse_max_shadow.topojson');
     loadEclipseShadow.done(function(data) {
         // console.log(data);
         renderEclipseShadow(map, projection, data);

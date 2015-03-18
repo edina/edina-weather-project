@@ -1,18 +1,37 @@
 (function() {
+  // from https://github.com/substack/point-in-polygon
+  function pointInPolygon (point, vs) {
+    // ray-casting algorithm based on
+    // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+    var xi, xj, i, intersect,
+        x = point[0],
+        y = point[1],
+        inside = false;
+    for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+      xi = vs[i][0],
+      yi = vs[i][1],
+      xj = vs[j][0],
+      yj = vs[j][1],
+      intersect = ((yi > y) != (yj > y))
+          && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+      if (intersect) inside = !inside;
+    }
+    return inside;
+  }
 
-    // Show/hide layer visibility
-    var layers = $('#layers').on('click', function (e) {
-        // event handler
-        var value = e.target.value;
-        if (value === 'temperature') {
-            $('#canvasImage').toggle();
-        }
-        else if( value === 'wind') {
-            $('.wind').toggle();
-        }else if(value === 'cloud') {
-            $('.clouds').toggle();
-        }
-    });
+  // Show/hide layer visibility
+  var layers = $('#layers').on('click', function (e) {
+      // event handler
+      var value = e.target.value;
+      if (value === 'temperature') {
+          $('#canvasImage').toggle();
+      }
+      else if( value === 'wind') {
+          $('.wind').toggle();
+      }else if(value === 'cloud') {
+          $('.clouds').toggle();
+      }
+  });
 
   var windSymbol = {
     halfWidth: 16,
@@ -21,7 +40,7 @@
     orientation: 90
   };
 
-  var width = 960,
+  var width = 580,
     height = 800;
   var ANIMATION_MOVES = 18;
 
@@ -35,7 +54,7 @@
     .attr("id", "svgForeignObject");
 
   var projection = d3.geo.mercator()
-    .center([0, 56.0])
+    .center([-3.5, 55.8])
     .scale(2250)
     .translate([width / 2, height / 2]);
 
@@ -93,10 +112,10 @@
 
 
     // Load wind data
-    d3.json("data/data.json", function (error, data) {
+    d3.json("data/data_complete.json", function (error, data) {
       if (error) return console.error(error);
 
-      // Heatmap 
+      // Heatmap
 
 
       doHeatMap(0);
@@ -105,7 +124,8 @@
         .data(data.data[0])
         .enter().append('path')
         .select(function(d, i) {
-          return d.Easting > 2 && d.Easting < 9 && d.Northing > 1 && d.Northing < 15 ? this : null;
+          var point = latLongProj.toGlobalLatLong(d.Northing * 70000, d.Easting * 65000);
+          return pointInPolygon( [point[1], point[0]], gb_simple ) ? this : null;
         })
         .attr('transform', function (d, i) {
           return transformWind(0, d, i);
@@ -130,10 +150,11 @@
           var point = data.data[value][i];
           var p = latLongProj.toGlobalLatLong(point.Northing * 70000, point.Easting * 65000);
           var scaleFactor = point["Wind Speed"] / windSymbol.scale;
-          var rotation = [windSymbol.halfWidth * scaleFactor, windSymbol.halfHeight * scaleFactor];
+          var rotationTranslation = [windSymbol.halfWidth * scaleFactor, windSymbol.halfHeight * scaleFactor];
+          var rotationOrientation = ((point["Wind Direction"]-1) * 45 + windSymbol.orientation) % 360;
           var coord = projection([p[1], p[0]]);
           coord = [coord[0] - (windSymbol.halfWidth * scaleFactor), coord[1] - (windSymbol.halfHeight * scaleFactor)];
-          return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + point["Wind Direction"] + ' ' + rotation[0] + ' ' + rotation[1] + ') scale(' + scaleFactor + ')';
+          return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + rotationOrientation + ' ' + rotationTranslation[0] + ' ' + rotationTranslation[1] + ') scale(' + scaleFactor + ')';
         }
         return;
       }
@@ -147,6 +168,10 @@
       var cloudSymb = svg.selectAll('.symb')
         .data(data.data[0])
         .enter().append('path')
+        .select(function(d, i) {
+          var point = latLongProj.toGlobalLatLong(d.Northing * 70000, d.Easting * 65000);
+          return pointInPolygon( [point[1], point[0]], gb_simple ) ? this : null;
+        })
         .attr('transform', function (d, i) {
           return transformCloud(0, d, i);
         })
@@ -219,7 +244,7 @@
       slider.on('slide', function (event, ui) {
         doTransitionCloud(ui.value);
       });
-      
+
       function doHeatMap(value) {
 
         var heatpoints = [];
