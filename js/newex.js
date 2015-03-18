@@ -93,7 +93,7 @@
 
 
     // Load wind data
-    d3.json("data/data.json", function (error, data) {
+    d3.json("data/data_complete.json", function (error, data) {
       if (error) return console.error(error);
 
       // Heatmap
@@ -130,10 +130,11 @@
           var point = data.data[value][i];
           var p = latLongProj.toGlobalLatLong(point.Northing * 70000, point.Easting * 65000);
           var scaleFactor = point["Wind Speed"] / windSymbol.scale;
-          var rotation = [windSymbol.halfWidth * scaleFactor, windSymbol.halfHeight * scaleFactor];
+          var rotationTranslation = [windSymbol.halfWidth * scaleFactor, windSymbol.halfHeight * scaleFactor];
+          var rotationOrientation = ((point["Wind Direction"]-1) * 45 + windSymbol.orientation) % 360;
           var coord = projection([p[1], p[0]]);
           coord = [coord[0] - (windSymbol.halfWidth * scaleFactor), coord[1] - (windSymbol.halfHeight * scaleFactor)];
-          return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + point["Wind Direction"] + ' ' + rotation[0] + ' ' + rotation[1] + ') scale(' + scaleFactor + ')';
+          return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + rotationOrientation + ' ' + rotationTranslation[0] + ' ' + rotationTranslation[1] + ') scale(' + scaleFactor + ')';
         }
         return;
       }
