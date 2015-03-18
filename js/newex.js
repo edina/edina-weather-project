@@ -1,18 +1,37 @@
 (function() {
+  // from https://github.com/substack/point-in-polygon
+  function pointInPolygon (point, vs) {
+    // ray-casting algorithm based on
+    // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
+    var xi, xj, i, intersect,
+        x = point[0],
+        y = point[1],
+        inside = false;
+    for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
+      xi = vs[i][0],
+      yi = vs[i][1],
+      xj = vs[j][0],
+      yj = vs[j][1],
+      intersect = ((yi > y) != (yj > y))
+          && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+      if (intersect) inside = !inside;
+    }
+    return inside;
+  }
 
-    // Show/hide layer visibility
-    var layers = $('#layers').on('click', function (e) {
-        // event handler
-        var value = e.target.value;
-        if (value === 'temperature') {
-            $('#canvasImage').toggle();
-        }
-        else if( value === 'wind') {
-            $('.wind').toggle();
-        }else if(value === 'cloud') {
-            $('.clouds').toggle();
-        }
-    });
+  // Show/hide layer visibility
+  var layers = $('#layers').on('click', function (e) {
+      // event handler
+      var value = e.target.value;
+      if (value === 'temperature') {
+          $('#canvasImage').toggle();
+      }
+      else if( value === 'wind') {
+          $('.wind').toggle();
+      }else if(value === 'cloud') {
+          $('.clouds').toggle();
+      }
+  });
 
   var windSymbol = {
     halfWidth: 16,
@@ -105,7 +124,8 @@
         .data(data.data[0])
         .enter().append('path')
         .select(function(d, i) {
-          return d.Easting > 2 && d.Easting < 9 && d.Northing > 1 && d.Northing < 15 ? this : null;
+          var point = latLongProj.toGlobalLatLong(d.Northing * 70000, d.Easting * 65000);
+          return pointInPolygon( [point[1], point[0]], gb_simple ) ? this : null;
         })
         .attr('transform', function (d, i) {
           return transformWind(0, d, i);
@@ -148,6 +168,10 @@
       var cloudSymb = svg.selectAll('.symb')
         .data(data.data[0])
         .enter().append('path')
+        .select(function(d, i) {
+          var point = latLongProj.toGlobalLatLong(d.Northing * 70000, d.Easting * 65000);
+          return pointInPolygon( [point[1], point[0]], gb_simple ) ? this : null;
+        })
         .attr('transform', function (d, i) {
           return transformCloud(0, d, i);
         })
