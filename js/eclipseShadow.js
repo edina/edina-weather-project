@@ -21,7 +21,7 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
             .attr('d', path);
     };
 
-    var renderEclipseShadow = function(map, projection, eclipseShadow) {
+    var renderEclipseMaxShadow = function(map, projection, eclipseShadow) {
         var path = d3.geo.path().projection(projection);
 
         var topology = topojson.feature(eclipseShadow,
@@ -34,6 +34,7 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
             .enter()
             .append('path')
             .attr('class', ecliseShadowClass)
+            .attr('display', 'none')
             .attr('fill', function(d) {
                 var maxAlpha = 0.8;
                 var magnitude = parseFloat(d.properties['magnitude_max']);
@@ -86,7 +87,7 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
 
         var shadowControlTemplate = (
             '<div class="checkbox">' +
-                '<label><input type="checkbox" checked value="' + ecliseShadowClass + '">Eclipse Maximum Shadow</label>' +
+                '<label><input type="checkbox" value="' + ecliseShadowClass + '">Eclipse Maximum Shadow</label>' +
             '</div>'
         );
 
@@ -155,7 +156,7 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
     var loadEclipseShadow = $.getJSON('data/2015_eclipse_max_shadow.topojson');
     loadEclipseShadow.done(function(data) {
         // console.log(data);
-        renderEclipseShadow(map, projection, data);
+        renderEclipseMaxShadow(map, projection, data);
     });
 
     loadEclipseShadow.error(function(err, errCode, errText) {
