@@ -58,7 +58,7 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
             .enter()
             .append('path')
             .attr('class', ecliseShadowClass)
-            .attr('stroke', 'black')
+            // .attr('stroke', 'black')
             .attr('fill', function(d) {
                 var feature = d;
                 var maxAlpha = 0.9;
