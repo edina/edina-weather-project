@@ -1,17 +1,18 @@
-(function () {
+(function() {
 
-  // Show/hide layer visibility
-  var layers = $('#layers').on('click', function (e) {
-    // event handler
-    var value = e.target.value;
-    if (value === 'temperature') {
-      $('#canvasImage').toggle();
-    } else if (value === 'wind') {
-      $('.wind').toggle();
-    } else if (value === 'cloud') {
-      $('.clouds').toggle();
-    }
-  });
+    // Show/hide layer visibility
+    var layers = $('#layers').on('click', function (e) {
+        // event handler
+        var value = e.target.value;
+        if (value === 'temperature') {
+            $('#canvasImage').toggle();
+        }
+        else if( value === 'wind') {
+            $('.wind').toggle();
+        }else if(value === 'cloud') {
+            $('.clouds').toggle();
+        }
+    });
 
   var windSymbol = {
     halfWidth: 16,
