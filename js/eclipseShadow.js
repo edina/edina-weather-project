@@ -24,16 +24,13 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
     var renderEclipseShadow = function(map, projection, eclipseShadow) {
         var path = d3.geo.path().projection(projection);
 
-        // d3 expects clockwise order for the point of each polygon
-        eclipseShadow.features.forEach(function(feature) {
-            feature.geometry.coordinates[0].forEach(function(polygon) {
-                polygon.reverse();
-            });
-        });
+        var topology = topojson.feature(eclipseShadow,
+                                        eclipseShadow
+                                            .objects['2015_eclipse_max_shadow']);
 
         map.append('g')
             .selectAll(ecliseShadowClass)
-            .data(eclipseShadow.features)
+            .data(topology.features)
             .enter()
             .append('path')
             .attr('class', ecliseShadowClass)
@@ -155,7 +152,7 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
     });
 
     // Load the data for the eclipse shadow
-    var loadEclipseShadow = $.getJSON('data/2015_eclipse_max_shadow.geojson');
+    var loadEclipseShadow = $.getJSON('data/2015_eclipse_max_shadow.topojson');
     loadEclipseShadow.done(function(data) {
         // console.log(data);
         renderEclipseShadow(map, projection, data);
