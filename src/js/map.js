@@ -1,20 +1,20 @@
 var weatherMap = (function(){
     var map, topoLayer;
-    
+
     // Copyright (c) 2013 Ryan Clark
     // https://gist.github.com/rclark/5779673
     L.TopoJSON = L.GeoJSON.extend({
-      addData: function(jsonData) {    
+      addData: function(jsonData) {
         if (jsonData.type === "Topology") {
           for (key in jsonData.objects) {
             geojson = topojson.feature(jsonData, jsonData.objects[key]);
             L.GeoJSON.prototype.addData.call(this, geojson);
           }
-        }    
+        }
         else {
           L.GeoJSON.prototype.addData.call(this, jsonData);
         }
-      }  
+      }
     });
 
     var addTopoData = function(topoData){
@@ -26,7 +26,7 @@ var weatherMap = (function(){
     var enterLayer = function (){
         var countryName = this.feature.properties.name;
         $tooltip.text(countryName).show();
-      
+
         this.bringToFront();
         this.setStyle({
             weight:2,
@@ -37,7 +37,7 @@ var weatherMap = (function(){
     var handleLayer = function (layer){
         var randomValue = Math.random(),
           fillColor = colorScale(randomValue).hex();
-          
+
         layer.setStyle({
           fillColor : fillColor,
           fillOpacity: 1,
@@ -59,14 +59,25 @@ var weatherMap = (function(){
         // create the tile layer with correct attribution
         var osmUrl='http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
         var osmAttrib='Map data © <a href="http://openstreetmap.org">OpenStreetMap</a> contributors';
-        var osm = new L.TileLayer(osmUrl, {minZoom: 5, maxZoom: 12, attribution: osmAttrib});
+        var osm = new L.TileLayer(osmUrl, {minZoom: 4, maxZoom: 12, attribution: osmAttrib});
 
         // start the map in South-East England
-        map.setView(new L.LatLng(51.3, 0.7),5);
+        map.setView(new L.LatLng(51.3, 0.7), 4);
         map.addLayer(osm);
 
         topoLayer = new L.TopoJSON();
         $.getJSON('data/gb2.json').done(addTopoData);
+
+        var projectPoint = function(x, y) {
+            var point = map.latLngToLayerPoint(new L.LatLng(y, x));
+            this.stream.point(point.x, point.y);
+        };
+
+        // project d3 points to leaflet
+        var projection = d3.geo.transform({point: projectPoint});
+
+
+        eclipseShadow(map, projection);
     };
 
     var leaveLayer = function (){
