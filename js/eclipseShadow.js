@@ -99,7 +99,7 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
             .find('input')
             .on('change', function(evt) {
                 var control = evt.currentTarget;
-                console.debug(control.val);
+
                 if (control.checked) {
                     $('.' + control.value).show();
                 }else {
@@ -118,7 +118,6 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
         var maxSlider = $(sliderElement).data().uiSlider.max;
         var ratio = (end - start) / maxSlider;
 
-        console.debug((value * ratio) + start);
         return start + (value * ratio);
     };
 
