@@ -12,10 +12,6 @@
         }else if(value === 'cloud') {
             $('.clouds').toggle();
         }
-        else if ( value === 'uk_mask' ) {
-          $('.uk_mask').toggle();
-          $('.uk_mask_outline').toggle();
-        }
     });
 
   var windSymbol = {
