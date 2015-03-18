@@ -103,6 +103,9 @@
       var symb = svg.selectAll('.symb')
         .data(data.data[0])
         .enter().append('path')
+        .select(function(d, i) {
+          return d.Easting > 2 && d.Easting < 9 && d.Northing > 1 && d.Northing < 15 ? this : null;
+        })
         .attr('transform', function (d, i) {
           return transformWind(0, d, i);
         })
