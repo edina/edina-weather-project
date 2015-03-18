@@ -1,0 +1,9 @@
+h1, h2x{
+  text-align: left;
+  font-weight: normal;
+}
+h1{
+  font-size: 30px;
+  margin: 20px;
+  color: #1a1a1a;
+}
