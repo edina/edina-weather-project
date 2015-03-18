@@ -21,7 +21,7 @@
     orientation: 90
   };
 
-  var width = 960,
+  var width = 580,
     height = 800;
   var ANIMATION_MOVES = 18;
 
@@ -35,7 +35,7 @@
     .attr("id", "svgForeignObject");
 
   var projection = d3.geo.mercator()
-    .center([0, 56.0])
+    .center([-3.5, 55.8])
     .scale(2250)
     .translate([width / 2, height / 2]);
 
@@ -96,7 +96,7 @@
     d3.json("data/data.json", function (error, data) {
       if (error) return console.error(error);
 
-      // Heatmap 
+      // Heatmap
 
 
       doHeatMap(0);
@@ -219,7 +219,7 @@
       slider.on('slide', function (event, ui) {
         doTransitionCloud(ui.value);
       });
-      
+
       function doHeatMap(value) {
 
         var heatpoints = [];
