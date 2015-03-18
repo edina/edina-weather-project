@@ -1,21 +1,22 @@
 div.eclipse{
-    background:#000000;
+    /*background: linear-gradient(to bottom, #90dffe 0%,#38a3d1 100%);*/
+    background-color: #59BBE5;
     width: 100%;
     height:100px;
 }
 
 div.sun{
     position:absolute; 
-    top:40px; 
+    top:30px; 
     left:50%; 
     margin-left:-10px; 
     background:#fff25e; 
-    width:20px; 
-    height:20px;
+    width:50px; 
+    height:50px;
 
-    border-radius:20px;
-    -moz-border-radius:20px;
-    -webkit-border-radius:20px;
+    border-radius:50px;
+    -moz-border-radius:50px;
+    -webkit-border-radius:50px;
 
     box-shadow:0 0 10px #fff25e;
     -moz-box-shadow:0 0 10px #fff25e;
@@ -27,20 +28,20 @@ div.sun{
     -webkit-transition: all 2s ease-out;
 }
 
-div.earth{
+div.moon{
     position:absolute;
     top:30px;
-    left:50px;
+    left:180px;
     width:50px; 
     height:50px; 
     /*opacity:0.2;*/
-    background:url('images/earth.png');
-    background-color: #000000;
+    /*background: linear-gradient(to bottom, #66D6FF 0%,#50B5E0 100%);*/
+    background-color: #59BBE5;
     
     
-    box-shadow: inset 0px 0px 10px #ffffff;
+/*    box-shadow: inset 0px 0px 10px #ffffff;
     -moz-box-shadow: inset 0px 0px 10px #ffffff;
-    -webkit-box-shadow: inset 0px 0px 10px #ffffff;
+    -webkit-box-shadow: inset 0px 0px 10px #ffffff;*/
     
     border-radius:50px;
     -moz-border-radius:50px;

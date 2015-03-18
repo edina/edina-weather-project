@@ -6,22 +6,47 @@ var eclipseAnimation = function(moves, slider) {
     'use strict';
 
     var eclipseWidth = $(".eclipse").width();
-    var step = Math.floor((eclipseWidth - 100)/moves);
-
-    var animateEclipse = function(value) {
-        var s = 50 + (step * value);
-        moveEarth(s);
+    var step = Math.floor(150/moves);
+    var colors = {
+        0: "#59BBE5",
+        10: "#3B7D99",
+        20: "#357089",
+        30: "#1E3E4C",
+        40: "#000000",
+        50: "#1E3E4C",
+        60: "#357089",
+        70: "#59BBE5"
     }
 
-    var moveEarth = function(pos, duration) {
+    var animateEclipse = function(value) {
+        var s = eclipseWidth/2 - 75 + (step * value);
+        moveMoon(s);
+    }
+
+    var moveMoon = function(pos, duration) {
         duration = duration || 500;
-        console.log(duration)
-        $(".earth").animate({
+        //console.log(duration)
+        $(".moon").animate({
             left: pos
         },
         {
             easing: "linear",
-            duration: duration
+            duration: duration,
+            step: function( now, fx ) {
+                if (now >= eclipseWidth/2 - 50 && now <= eclipseWidth/2 + 25){
+                    //console.log(eclipseWidth/2-now+25)
+                    var n = Math.round((eclipseWidth/2-now+25)/10)*10;
+                    var color = colors[n];
+                    $('.eclipse').css({"background-color": color});
+                    $('.moon').css({"background-color": color});
+                }
+                else{
+                    $('.eclipse').css({"background-color": "#59BBE5"});
+                }
+            },
+            progress: function(animation, progress, remainingMs){
+                //console.log(progress)
+            }
         });
     }
 
@@ -46,13 +71,13 @@ var eclipseAnimation = function(moves, slider) {
         rules.push('}');
         //$('body').addClass(rules.join(" "));
         console.log(rules.join(" "))
-        $('.earth').css({'animation': 'earth-slider 10s'})
+        $('.moon').css({'animation': 'earth-slider 10s'})
     }
 
     $(slider).on('slide', function(event, ui) {
-        var pos = eclipseWidth - 50;
+        var pos = eclipseWidth/2 + 75;
         if(isPlaying){
-            moveEarth(pos, 21422);
+            moveMoon(pos, 21422);
         }
         else{
             animateEclipse(ui.value);
