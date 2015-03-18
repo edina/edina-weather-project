@@ -10,7 +10,7 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
     var renderEclipsePath = function(map, projection, eclipsePath) {
         var path = d3.geo.path().projection(projection);
 
-        map
+        map.append('g')
             .selectAll(eclisePathClass)
             .data([eclipsePath])
             .enter()
@@ -23,14 +23,22 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
 
     var renderEclipseShadow = function(map, projection, eclipseShadow) {
         var path = d3.geo.path().projection(projection);
-        map
+
+        // d3 expects clockwise order for the point of each polygon
+        eclipseShadow.features.forEach(function(feature) {
+            feature.geometry.coordinates[0].forEach(function(polygon) {
+                polygon.reverse();
+            });
+        });
+
+        map.append('g')
             .selectAll(ecliseShadowClass)
             .data(eclipseShadow.features)
             .enter()
             .append('path')
             .attr('class', ecliseShadowClass)
             .attr('fill', function(d) {
-                var maxAlpha = 0.1;
+                var maxAlpha = 0.8;
                 var magnitude = parseFloat(d.properties['magnitude_max']);
                 var alpha = maxAlpha * magnitude;
                 var rgba = 'rgba(0,0,0,' + alpha + ')';
