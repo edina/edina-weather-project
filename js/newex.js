@@ -110,7 +110,31 @@
       .attr("id", "canvasImage")
       .attr("xlink:href", "");
 
+      d3.json("http://datapoint.metoffice.gov.uk/public/data/val/wxobs/all/json/all?res=hourly&key=76f2c909-4e4b-4239-87fe-b7602605093e", function (error,data)
+     {
+         if (error) return console.error(error);
+         
+          
+          svg.selectAll("circle")
+    .data(data.SiteRep.DV.Location)
+  .enter().append("circle")
+    .attr("cy", function(d){
+            var lat = d['lat'] ;
+            var lon = d['lon'] ;
+            var coord = projection(lat, lon);
+            return Math.floor(coord[1]) ;
+          })
+    .attr("cx", function(d){
+            var lat = d['lat'] ;
+            var lon = d['lon'] ;
+            var coord = projection(lat, lon);
+            return  Math.floor(coord[0]) ;
+          })
+    .attr("r", 20);
 
+          
+    });
+    
     // Load wind data
     d3.json("data/data_complete.json", function (error, data) {
       if (error) return console.error(error);
