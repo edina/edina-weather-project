@@ -139,7 +139,7 @@ var averageCharts = (function () {
     //var x = d3.time.scale()
     //    .range([0, width]);
 
-    var svg = d3.select("#temp_chart").append("svg")
+    var svg = d3.select("#wind_chart").append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
@@ -285,7 +285,8 @@ var averageCharts = (function () {
     },
     changeToWindSpeed = function () {
 
-
+      $('#temp_chart').hide();
+      $('#wind_chart').show();
 
     };
   return {
@@ -318,6 +319,7 @@ if (typeof window === "object" && typeof window.document === "object") {
 $(document).ready(function () {
   var charts = averageCharts;
   charts.init();
+  $('#wind_chart').hide();
   $("#windSpeedBut").click(function () {
 
     charts.changeToWindSpeed();
