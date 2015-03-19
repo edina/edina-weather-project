@@ -42,7 +42,7 @@
   var windSymbol = {
     halfWidth: 16,
     halfHeight: 16,
-    scale: 40,
+    scale: 1.2,
     orientation: 90
   };
 
@@ -165,7 +165,7 @@
           windStrength = 1;
         }
         
-        var scaleFactor = (windStrength / windSymbol.scale) * 5;
+        var scaleFactor = (Math.log(windStrength) / Math.log(10)) * windSymbol.scale;
         var windAngle = 0;
         switch ( windDirection ) {
           case 'N':
