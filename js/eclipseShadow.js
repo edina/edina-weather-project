@@ -55,15 +55,21 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
 
     var newEclipseShadow = function(map, projection, eclipseShadow) {
         var path = d3.geo.path().projection(projection);
+
+        var topology = topojson.feature(eclipseShadow,
+                                        eclipseShadow
+                                            .objects['2015_eclipse_times']);
+
         var g = map.append('g')
                    .attr('class', ecliseShadowLayerClass);
         var polygons = g
                         .selectAll(ecliseShadowClass)
-                        .data(eclipseShadow.features)
+                        .data(topology.features)
                         .enter()
                         .append('path')
                         .attr('class', ecliseShadowClass)
                         .attr('fill', 'rgba(0,0,0,0.1)')
+                        .attr('stroke-width', '0')
                         .attr('stroke', 'none')
                         .attr('d', path);
 
@@ -74,8 +80,8 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
                 var alpha = 0;
                 var magnitude = parseFloat(d.properties.magnitude);
                 var dateMax = fmt.parse(d.properties.date).getTime() / 1000;
-                var dateC1 = fmt.parse(d.properties.c1.date).getTime() / 1000;
-                var dateC4 = fmt.parse(d.properties.c4.date).getTime() / 1000;
+                var dateC1 = fmt.parse(d.properties.c1date).getTime() / 1000;
+                var dateC4 = fmt.parse(d.properties.c4date).getTime() / 1000;
                 var fadeInRatio = magnitude / (dateMax - dateC1);
                 var fadeOutRatio = magnitude / (dateC4 - dateMax);
 
@@ -228,7 +234,7 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
     });
 
     // Load the data for the eclipse max shadow
-    var loadEclipseShadow = $.getJSON('data/2015_eclipse_times.geojson');
+    var loadEclipseShadow = $.getJSON('data/2015_eclipse_times.topojson');
     loadEclipseShadow.done(function(data) {
         // console.log(data);
         var shadow = newEclipseShadow(map, projection, data);
