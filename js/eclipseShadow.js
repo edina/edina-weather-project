@@ -79,13 +79,11 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
                 var fadeInRatio = magnitude / (dateMax - dateC1);
                 var fadeOutRatio = magnitude / (dateC4 - dateMax);
 
-                if (unixtime >= dateC1 && unixtime <= dateC4) {
-                    if (unixtime >= dateC1 && unixtime <= dateMax) {
-                        alpha = (unixtime - dateC1) * fadeInRatio * maxAlpha;
-                    }
-                    else {
-                        alpha = (dateMax - unixtime) * fadeOutRatio * maxAlpha;
-                    }
+                if (unixtime >= dateC1 && unixtime <= dateMax) {
+                    alpha = (unixtime - dateC1) * fadeInRatio * maxAlpha;
+                }
+                else if (unixtime > dateMax && unixtime <= dateC4) {
+                    alpha = (dateMax - unixtime) * fadeOutRatio * maxAlpha;
                 }
 
                 return alpha;
