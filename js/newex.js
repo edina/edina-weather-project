@@ -42,13 +42,13 @@
   var windSymbol = {
     halfWidth: 16,
     halfHeight: 16,
-    scale: 40,
+    scale: 1.2,
     orientation: 90
   };
 
   var width = 580,
     height = 800;
-  var ANIMATION_MOVES = 18;
+  var ANIMATION_MOVES = 6 * 12; // midnight to midday, 10 minute increments
 
   var svg = d3.select("#map").append("svg")
     .attr("width", width)
@@ -121,8 +121,6 @@
       if (error) return console.error(error);
 
       // Heatmap
-
-
       doHeatMap(0);
 
       var symb = svg.selectAll('.symb')
@@ -167,7 +165,7 @@
           windStrength = 1;
         }
         
-        var scaleFactor = (windStrength / windSymbol.scale) * 5;
+        var scaleFactor = windStrength != 0 ? (Math.log(windStrength) / Math.log(10)) * windSymbol.scale : 0;
         var windAngle = 0;
         switch ( windDirection ) {
           case 'N':
@@ -230,7 +228,7 @@
       }
 
       slider.on('slide', function (event, ui) {
-        doTransition(ui.value);
+        doTransition(Math.floor(ui.value / 6));
       });
 
       // Load cloud data
@@ -250,7 +248,7 @@
 //        .attr("clip-path", "url(#ukClipPath);")
         .attr('stroke', '#333')
         .attr('class', 'clouds')
-        .attr('style', function (d, i) {
+        .attr('fill', function (d, i) {
           return transformCloudFill(0, d, i);
         });
 
@@ -285,13 +283,13 @@
         var point = d.Period[1].Rep[value];
         var cover = point.W;
         if (cover <= 3) {
-          return 'fill:yellow';
+          return 'yellow';
         } else if (cover === 8) {
-          return 'fill:white';
+          return 'white';
         } else if (cover <= 7) {
-          return 'fill:black';
+          return 'black';
         } else {
-          return 'fill:blue';
+          return 'blue';
         }
       };
       // Moves the symbols on the map
@@ -304,14 +302,14 @@
           .attr('stroke', '#333')
           //  .attr('fill', function(d, i) {
           //    return transformCloudFill( value, d, i );
-          .attr('style', function (d, i) {
+          .attr('fill', function (d, i) {
             return transformCloudFill(value, d, i);
 
           }).duration(1) // hides the messy transform between shapes;
       }
 
       slider.on('slide', function (event, ui) {
-        doTransitionCloud(ui.value);
+        doTransitionCloud(Math.floor(ui.value / 6));
       });
 
       function doHeatMap(value) {
@@ -367,7 +365,7 @@
       };
 
       slider.on('slide', function (event, ui) {
-        doHeatMap(ui.value);
+        doHeatMap(Math.floor(ui.value/6));
         $('.heatmap-canvas').index = 0;
       });
 
@@ -378,7 +376,7 @@
     // Put the shadow elements in the map
     eclipseShadow(svg, projection, slider, layers);
   }); // end of async map data
-
+      
+  // Start eclise animation now we know the size of the data
   eclipseAnimation(ANIMATION_MOVES, slider);
-
 })();

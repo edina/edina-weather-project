@@ -14,7 +14,7 @@
 function setTime(value) {
     //not used
     var getUnixTime = function(hours, minutes){
-      var date = new Date(2015, 2, 20, 8, 0);
+      var date = new Date(2015, 2, 20, 0, 0);
       return date.getTime()/1000|0;
     }
     var getDate = function(hours,minutes){
@@ -22,10 +22,9 @@ function setTime(value) {
     };
     var hours = Math.floor(value/6);
     var minutes = (value - (hours * 6)) * 10;
-    hours += 8;
     var dt = getDate(hours, minutes) ;
-   // $("#time").html(getDate(hours, minutes).toString());
-    $("#time").html(dt.getHours() + ":"+ dt.getMinutes()) ;
+    $("#time").html(getDate(hours, minutes).toString());
+    //$("#time").html(dt.getHours() + ":"+ dt.getMinutes()) ;
     var charts = averageCharts;
     averageCharts.highlightTime(getDate(hours, minutes));
   }

@@ -2,15 +2,21 @@
 /* global module: false */
 /* global define: false */
 /* global $: false */
+/* global topojson: false */
 var eclipseShadow = function(map, projection, sliderElement, layerControlElement) {
     'use strict';
     var eclisePathClass = 'eclipse-path';
+    var eclisePathLayerClass = 'eclipse-path-layer';
     var ecliseShadowClass = 'eclipse-shadow';
+    var ecliseShadowLayerClass = 'eclipse-shadow-layer';
+    var ecliseMaxShadowClass = 'eclipse-max-shadow';
+    var ecliseMaxShadowLayerClass = 'eclipse-max-shadow-layer';
 
     var renderEclipsePath = function(map, projection, eclipsePath) {
         var path = d3.geo.path().projection(projection);
 
         map.append('g')
+            .attr('class', eclisePathLayerClass)
             .selectAll(eclisePathClass)
             .data([eclipsePath])
             .enter()
@@ -29,11 +35,12 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
                                             .objects['2015_eclipse_max_shadow']);
 
         map.append('g')
-            .selectAll(ecliseShadowClass)
+            .attr('class', ecliseMaxShadowLayerClass)
+            .selectAll(ecliseMaxShadowClass)
             .data(topology.features)
             .enter()
             .append('path')
-            .attr('class', ecliseShadowClass)
+            .attr('class', ecliseMaxShadowClass)
             .attr('display', 'none')
             .attr('fill', function(d) {
                 var maxAlpha = 0.8;
@@ -44,6 +51,61 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
                 return rgba;
             })
             .attr('d', path);
+    };
+
+    var newEclipseShadow = function(map, projection, eclipseShadow) {
+        var path = d3.geo.path().projection(projection);
+
+        var topology = topojson.feature(eclipseShadow,
+                                        eclipseShadow
+                                            .objects['2015_eclipse_times']);
+
+        var g = map.append('g')
+                   .attr('class', ecliseShadowLayerClass);
+        var polygons = g
+                        .selectAll(ecliseShadowClass)
+                        .data(topology.features)
+                        .enter()
+                        .append('path')
+                        .attr('class', ecliseShadowClass)
+                        .attr('fill', 'rgba(0,0,0,0.1)')
+                        .attr('stroke', 'none')
+                        .attr('d', path);
+
+        var fmt = d3.time.format('%Y/%m/%d %H:%M:%S.%L');
+        var update = function(unixtime) {
+            var calculateAlpha = function(d) {
+                var maxAlpha = 0.8;
+                var alpha = 0;
+                var magnitude = parseFloat(d.properties.magnitude);
+                var dateMax = fmt.parse(d.properties.date).getTime() / 1000;
+                var dateC1 = fmt.parse(d.properties.c1date).getTime() / 1000;
+                var dateC4 = fmt.parse(d.properties.c4date).getTime() / 1000;
+                var fadeInRatio = magnitude / (dateMax - dateC1);
+                var fadeOutRatio = magnitude / (dateC4 - dateMax);
+
+                if (unixtime >= dateC1 && unixtime <= dateMax) {
+                    alpha = (unixtime - dateC1) * fadeInRatio * maxAlpha;
+                }
+                else if (unixtime > dateMax && unixtime <= dateC4) {
+                    alpha = (magnitude - ((unixtime - dateMax) * fadeOutRatio)) * maxAlpha;
+                }
+
+                return alpha;
+            };
+
+            polygons
+                .attr('fill', function(d) {
+                    var alpha = calculateAlpha(d);
+                    var rgba = 'rgba(0,0,0,' + alpha + ')';
+
+                    return rgba;
+                });
+        };
+
+        return {
+            update: update
+        };
     };
 
     var newUmbra = function(map, projection) {
@@ -81,18 +143,25 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
     var addLayerControls = function() {
         var pathControlTemplate = (
             '<div class="checkbox">' +
-                '<label><input type="checkbox" checked value="' + eclisePathClass + '">Eclipse Path</label>' +
+                '<label><input type="checkbox" checked value="' + eclisePathLayerClass + '">Eclipse Path</label>' +
+            '</div>'
+        );
+
+        var shadowMaxControlTemplate = (
+            '<div class="checkbox">' +
+                '<label><input type="checkbox" value="' + ecliseMaxShadowLayerClass + '">Eclipse Maximum Shadow</label>' +
             '</div>'
         );
 
         var shadowControlTemplate = (
             '<div class="checkbox">' +
-                '<label><input type="checkbox" value="' + ecliseShadowClass + '">Eclipse Maximum Shadow</label>' +
+                '<label><input type="checkbox" checked value="' + ecliseShadowLayerClass + '">Eclipse Shadow</label>' +
             '</div>'
         );
 
         $(layerControlElement)
             .append(pathControlTemplate)
+            .append(shadowMaxControlTemplate)
             .append(shadowControlTemplate)
             .find('input')
             .on('change', function(evt) {
@@ -110,13 +179,13 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
       * The slider return steps instead of unix time
       * try to convert them to unix time
     */
+    var START_DATE = ((new Date(2015, 3 - 1, 20)).getTime() / 1000);
+    var END_DATE = ((new Date(2015, 3 - 1, 20, 12)).getTime() / 1000);
     var intervalToUnixTime = function(value) {
-        var start = 1426838400;
-        var end = 1426849200;
         var maxSlider = $(sliderElement).data().uiSlider.max;
-        var ratio = (end - start) / maxSlider;
+        var ratio = (END_DATE - START_DATE) / maxSlider;
 
-        return start + (value * ratio);
+        return START_DATE + (value * ratio);
     };
 
     var loadEclipsePath = $.getJSON('data/2015_eclipse_path.geojson');
@@ -152,11 +221,30 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
         console.error(errText);
     });
 
-    // Load the data for the eclipse shadow
-    var loadEclipseShadow = $.getJSON('data/2015_eclipse_max_shadow.topojson');
-    loadEclipseShadow.done(function(data) {
+    // Load the data for the eclipse max shadow
+    var loadEclipseMaxShadow = $.getJSON('data/2015_eclipse_max_shadow.topojson');
+    loadEclipseMaxShadow.done(function(data) {
         // console.log(data);
         renderEclipseMaxShadow(map, projection, data);
+    });
+
+    loadEclipseMaxShadow.error(function(err, errCode, errText) {
+        console.error(errText);
+    });
+
+    // Load the data for the eclipse max shadow
+    var loadEclipseShadow = $.getJSON('data/2015_eclipse_times.topojson');
+    loadEclipseShadow.done(function(data) {
+        // console.log(data);
+        var shadow = newEclipseShadow(map, projection, data);
+
+        var currentTime = intervalToUnixTime(0);
+        shadow.update(currentTime);
+
+        $(sliderElement).on('slide', function(event, ui) {
+            var currentTime = intervalToUnixTime(ui.value);
+            shadow.update(currentTime);
+        });
     });
 
     loadEclipseShadow.error(function(err, errCode, errText) {
