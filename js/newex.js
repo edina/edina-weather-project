@@ -48,7 +48,8 @@
 
   var width = 580,
     height = 800;
-  var ANIMATION_MOVES = 6 * 12; // midnight to midday, 10 minute increments
+  var ANIMATION_MOVES = 12 * 12; // midnight to midday, 5 minute increments
+  var FRAMES_PER_HOUR = 12; // 5 minute intervals per hour
 
   var svg = d3.select("#map").append("svg")
     .attr("width", width)
@@ -228,7 +229,7 @@
       }
 
       slider.on('slide', function (event, ui) {
-        doTransition(Math.floor(ui.value / 6));
+        doTransition(Math.floor(ui.value / FRAMES_PER_HOUR));
       });
 
       // Load cloud data
@@ -309,7 +310,7 @@
       }
 
       slider.on('slide', function (event, ui) {
-        doTransitionCloud(Math.floor(ui.value / 6));
+        doTransitionCloud(Math.floor(ui.value / FRAMES_PER_HOUR));
       });
 
       function doHeatMap(value) {
@@ -365,7 +366,7 @@
       };
 
       slider.on('slide', function (event, ui) {
-        doHeatMap(Math.floor(ui.value/6));
+        doHeatMap(Math.floor(ui.value / FRAMES_PER_HOUR));
         $('.heatmap-canvas').index = 0;
       });
 
