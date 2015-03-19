@@ -128,10 +128,9 @@
       var symb = svg.selectAll('.symb')
         .data(data.SiteRep.DV.Location)
         .enter().append('path')
-//        .select(function (d, i) {
-//          var point = latLongProj.toGlobalLatLong(d.Northing * 70000, d.Easting * 65000);
-//          return pointInPolygon([point[1], point[0]], gb_simple) ? this : null;
-//        })
+        .select(function (d, i) {
+          return i % 3 === 0 ? this : null;
+        })
         .attr('transform', function (d, i) {
           return transformWind(0, d, i);
         })
@@ -239,10 +238,9 @@
       var cloudSymb = svg.selectAll('.symb')
         .data(data.SiteRep.DV.Location)
         .enter().append('path')
-//        .select(function (d, i) {
-//          var point = latLongProj.toGlobalLatLong(d.Northing * 70000, d.Easting * 65000);
-//          return pointInPolygon([point[1], point[0]], gb_simple) ? this : null;
-//        })
+        .select(function (d, i) {
+          return i % 10 === 0 ? this : null;
+        })
         .attr('transform', function (d, i) {
           return transformCloud(0, d, i);
         })
