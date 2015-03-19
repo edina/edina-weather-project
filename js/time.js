@@ -20,11 +20,11 @@ function setTime(value) {
     var getDate = function(hours,minutes){
       return new Date(2015, 2, 20, hours, minutes, 0, 0);
     };
-    var hours = value;
-    var minutes = 0;
+    var hours = Math.floor(value/6);
+    var minutes = (value - (hours * 6)) * 10;
     var dt = getDate(hours, minutes) ;
-    // $("#time").html(getDate(hours, minutes).toString());
-    $("#time").html(dt.getHours() + ":"+ dt.getMinutes()) ;
+    $("#time").html(getDate(hours, minutes).toString());
+    //$("#time").html(dt.getHours() + ":"+ dt.getMinutes()) ;
     var charts = averageCharts;
     averageCharts.highlightTime(getDate(hours, minutes));
   }

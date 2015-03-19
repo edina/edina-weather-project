@@ -48,7 +48,7 @@
 
   var width = 580,
     height = 800;
-  var ANIMATION_MOVES = 18;
+  var ANIMATION_MOVES = 6 * 12; // midnight to midday, 10 minute increments
 
   var svg = d3.select("#map").append("svg")
     .attr("width", width)
@@ -120,14 +120,8 @@
     d3.json("http://datapoint.metoffice.gov.uk/public/data/val/wxobs/all/json/all?res=hourly&key=76f2c909-4e4b-4239-87fe-b7602605093e", function (error, data) {
       if (error) return console.error(error);
 
-      // Set slider size
-      ANIMATION_MOVES = data.SiteRep.DV.Location[0].Period[1].Rep.length - 2;
-      $("#slider").slider('option',{min: 0, max: ANIMATION_MOVES});
       // Heatmap
       doHeatMap(0);
-      
-      // Start eclise animation now we know the size of the data
-      eclipseAnimation(ANIMATION_MOVES, slider);
 
       var symb = svg.selectAll('.symb')
         .data(data.SiteRep.DV.Location)
@@ -234,7 +228,7 @@
       }
 
       slider.on('slide', function (event, ui) {
-        doTransition(ui.value);
+        doTransition(Math.floor(ui.value / 6));
       });
 
       // Load cloud data
@@ -315,7 +309,7 @@
       }
 
       slider.on('slide', function (event, ui) {
-        doTransitionCloud(ui.value);
+        doTransitionCloud(Math.floor(ui.value / 6));
       });
 
       function doHeatMap(value) {
@@ -371,7 +365,7 @@
       };
 
       slider.on('slide', function (event, ui) {
-        doHeatMap(ui.value);
+        doHeatMap(Math.floor(ui.value/6));
         $('.heatmap-canvas').index = 0;
       });
 
@@ -382,4 +376,7 @@
     // Put the shadow elements in the map
     eclipseShadow(svg, projection, slider, layers);
   }); // end of async map data
+      
+  // Start eclise animation now we know the size of the data
+  eclipseAnimation(ANIMATION_MOVES, slider);
 })();
