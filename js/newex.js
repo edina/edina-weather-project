@@ -1,19 +1,18 @@
-(function() {
+(function () {
   // from https://github.com/substack/point-in-polygon
-  function pointInPolygon (point, vs) {
+  function pointInPolygon(point, vs) {
     // ray-casting algorithm based on
     // http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
     var xi, xj, i, intersect,
-        x = point[0],
-        y = point[1],
-        inside = false;
+      x = point[0],
+      y = point[1],
+      inside = false;
     for (var i = 0, j = vs.length - 1; i < vs.length; j = i++) {
       xi = vs[i][0],
-      yi = vs[i][1],
-      xj = vs[j][0],
-      yj = vs[j][1],
-      intersect = ((yi > y) != (yj > y))
-          && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
+        yi = vs[i][1],
+        xj = vs[j][0],
+        yj = vs[j][1],
+        intersect = ((yi > y) != (yj > y)) && (x < (xj - xi) * (y - yi) / (yj - yi) + xi);
       if (intersect) inside = !inside;
     }
     return inside;
@@ -21,16 +20,15 @@
 
   // Show/hide layer visibility
   var layers = $('#layers').on('click', function (e) {
-      // event handler
-      var value = e.target.value;
-      if (value === 'temperature') {
-          $('#canvasImage').toggle();
-      }
-      else if( value === 'wind') {
-          $('.wind').toggle();
-      }else if(value === 'cloud') {
-          $('.clouds').toggle();
-      }
+    // event handler
+    var value = e.target.value;
+    if (value === 'temperature') {
+      $('#canvasImage').toggle();
+    } else if (value === 'wind') {
+      $('.wind').toggle();
+    } else if (value === 'cloud') {
+      $('.clouds').toggle();
+    }
   });
 
   var windSymbol = {
@@ -110,33 +108,8 @@
       .attr("id", "canvasImage")
       .attr("xlink:href", "");
 
-      d3.json("http://datapoint.metoffice.gov.uk/public/data/val/wxobs/all/json/all?res=hourly&key=76f2c909-4e4b-4239-87fe-b7602605093e", function (error,data)
-     {
-         if (error) return console.error(error);
-         
-          
-          svg.selectAll("circle")
-    .data(data.SiteRep.DV.Location)
-  .enter().append("circle")
-    .attr("cy", function(d){
-            var lat = d['lat'] ;
-            var lon = d['lon'] ;
-            var coord = projection(lat, lon);
-            return Math.floor(coord[1]) ;
-          })
-    .attr("cx", function(d){
-            var lat = d['lat'] ;
-            var lon = d['lon'] ;
-            var coord = projection(lat, lon);
-            return  Math.floor(coord[0]) ;
-          })
-    .attr("r", 20);
-
-          
-    });
-    
     // Load wind data
-    d3.json("data/data_complete.json", function (error, data) {
+    d3.json("http://datapoint.metoffice.gov.uk/public/data/val/wxobs/all/json/all?res=hourly&key=76f2c909-4e4b-4239-87fe-b7602605093e", function (error, data) {
       if (error) return console.error(error);
 
       // Heatmap
@@ -145,12 +118,12 @@
       doHeatMap(0);
 
       var symb = svg.selectAll('.symb')
-        .data(data.data[0])
+        .data(data.SiteRep.DV.Location)
         .enter().append('path')
-        .select(function(d, i) {
-          var point = latLongProj.toGlobalLatLong(d.Northing * 70000, d.Easting * 65000);
-          return pointInPolygon( [point[1], point[0]], gb_simple ) ? this : null;
-        })
+//        .select(function (d, i) {
+//          var point = latLongProj.toGlobalLatLong(d.Northing * 70000, d.Easting * 65000);
+//          return pointInPolygon([point[1], point[0]], gb_simple) ? this : null;
+//        })
         .attr('transform', function (d, i) {
           return transformWind(0, d, i);
         })
@@ -170,17 +143,83 @@
       };
 
       function transformWind(value, d, i) {
-        if (value < data.data.length) {
-          var point = data.data[value][i];
-          var p = latLongProj.toGlobalLatLong(point.Northing * 70000, point.Easting * 65000);
-          var scaleFactor = point["Wind Speed"] / windSymbol.scale;
-          var rotationTranslation = [windSymbol.halfWidth * scaleFactor, windSymbol.halfHeight * scaleFactor];
-          var rotationOrientation = ((point["Wind Direction"]-1) * 45 + windSymbol.orientation) % 360;
-          var coord = projection([p[1], p[0]]);
-          coord = [coord[0] - (windSymbol.halfWidth * scaleFactor), coord[1] - (windSymbol.halfHeight * scaleFactor)];
-          return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + rotationOrientation + ' ' + rotationTranslation[0] + ' ' + rotationTranslation[1] + ') scale(' + scaleFactor + ')';
+        var point = d.Period[1].Rep[value];
+        var lat = d['lat'];
+        var lon = d['lon'];
+        var coord = projection([lon, lat]);
+
+        var windDirection = point.D;
+        var windStrength = point.S;
+        
+        // Set some crappy defaults as sometimes data is missing
+        // Not great but will do for a test visualisation
+        if ( !windDirection ) {
+          windDirection = 'N';
         }
-        return;
+        if ( !windStrength ) {
+          windStrength = 1;
+        }
+        
+        var scaleFactor = (windStrength / windSymbol.scale) * 5;
+        var windAngle = 0;
+        switch ( windDirection ) {
+          case 'N':
+            windAngle = 0;
+            break;
+          case 'NNE':
+            windAngle = 22.5;
+            break;
+          case 'NE':
+            windAngle = 45;
+            break;
+          case 'ENE':
+            windAngle = 67.5;
+            break;
+          case 'E':
+            windAngle = 90;
+            break;
+          case 'ESE':
+            windAngle = 112.5;
+            break;
+          case 'SE':
+            windAngle = 135;
+            break;
+          case 'SSE':
+            windAngle = 157.5;
+            break;
+          case 'S':
+            windAngle = 180;
+            break;
+          case 'SSW':
+            windAngle = 202.5;
+            break;
+          case 'SW':
+            windAngle = 225;
+            break;
+          case 'WSW':
+            windAngle = 247.5
+            break;
+          case 'W':
+            windAngle = 270;
+            break;
+          case 'WNW':
+            windAngle = 292.5;
+            break;
+          case 'NW':
+            windAngle = 315;
+            break;
+          case 'NNW':
+            windAngle = 337.5;
+            break;
+          default:
+            console.log('Unknown wind direction: ' + windDirection );
+        }
+
+        var rotationTranslation = [windSymbol.halfWidth * scaleFactor, windSymbol.halfHeight * scaleFactor];
+        var rotationOrientation = (windAngle + windSymbol.orientation) % 360;
+
+        coord = [coord[0] - (windSymbol.halfWidth * scaleFactor), coord[1] - (windSymbol.halfHeight * scaleFactor)];
+        return 'translate(' + coord[0] + ',' + coord[1] + ') rotate(' + rotationOrientation + ' ' + rotationTranslation[0] + ' ' + rotationTranslation[1] + ') scale(' + scaleFactor + ')';
       }
 
       slider.on('slide', function (event, ui) {
@@ -190,12 +229,12 @@
       // Load cloud data
 
       var cloudSymb = svg.selectAll('.symb')
-        .data(data.data[0])
+        .data(data.SiteRep.DV.Location)
         .enter().append('path')
-        .select(function(d, i) {
-          var point = latLongProj.toGlobalLatLong(d.Northing * 70000, d.Easting * 65000);
-          return pointInPolygon( [point[1], point[0]], gb_simple ) ? this : null;
-        })
+//        .select(function (d, i) {
+//          var point = latLongProj.toGlobalLatLong(d.Northing * 70000, d.Easting * 65000);
+//          return pointInPolygon([point[1], point[0]], gb_simple) ? this : null;
+//        })
         .attr('transform', function (d, i) {
           return transformCloud(0, d, i);
         })
@@ -210,26 +249,25 @@
         });
 
       function transformCloud(value, d, i) {
-        var point = data.data[value][i];
-        var p = latLongProj.toGlobalLatLong(point.Northing * 70000, point.Easting * 65000);
-        var coord = projection([p[1], p[0]]);
+        var point = d.Period[1].Rep[value];
+        var lat = d['lat'];
+        var lon = d['lon'];
+        var coord = projection([lon, lat]);
+        
         return 'translate(' + coord[0] + ',' + coord[1] + ')';
       };
 
       function transformCloudPath(value, d, i) {
 
-        if (!(i == 27 || i == 35 || i == 58 || i == 75 || i == 43 || i == 106 || i == 134 || i == 175)) {
-          return null;
-        }
-
-        var point = data.data[value][i];
-        var cover = point["Cloud Cover"];
+        var point = d.Period[1].Rep[value];
+        var cover = point.W;
+        
         var symbol = null;
-        if (cover < 2) {
+        if (cover <= 3) {
           symbol = 'sun';
-        } else if (cover < 3) {
+        } else if (cover === 8) {
           symbol = 'overcast';
-        } else if (cover < 4) {
+        } else if (cover <= 7) {
           symbol = 'cloudy';
         } else {
           symbol = 'rainy';
@@ -238,12 +276,13 @@
       };
 
       function transformCloudFill(value, d, i) {
-        var point = data.data[value][i];
-        if (point["Cloud Cover"] < 2) {
+        var point = d.Period[1].Rep[value];
+        var cover = point.W;
+        if (cover <= 3) {
           return 'fill:yellow';
-        } else if (point["Cloud Cover"] < 3) {
+        } else if (cover === 8) {
           return 'fill:white';
-        } else if (point["Cloud Cover"] < 4) {
+        } else if (cover <= 7) {
           return 'fill:black';
         } else {
           return 'fill:blue';
@@ -274,13 +313,14 @@
         var heatpoints = [];
 
         d3.select("map")
-          .data = data.data[value]
+          .data = data.SiteRep.DV.Location
           .forEach(function (d, i) {
-            var temperature = d["Temperature"];
-            var northing = d["Northing"];
-            var easting = d["Easting"];
-            var p = latLongProj.toGlobalLatLong(northing * 70000, easting * 65000);
-            var coord = projection([p[1], p[0]]);
+            var point = d.Period[1].Rep[value];
+            var lat = d['lat'];
+            var lon = d['lon'];
+            var coord = projection([lon, lat]);
+
+            var temperature = point.T;
             var heatpoint = {
               x: coord[0],
               y: coord[1],
