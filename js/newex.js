@@ -249,7 +249,7 @@
         .attr('d', function (d, i) { // d is svg path attr
           return transformCloudPath(0, d, i);
         })
-        .attr("clip-path", "url(#ukClipPath);")
+//        .attr("clip-path", "url(#ukClipPath);")
         .attr('stroke', '#333')
         .attr('class', 'clouds')
         .attr('style', function (d, i) {
