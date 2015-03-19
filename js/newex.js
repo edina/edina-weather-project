@@ -165,7 +165,7 @@
           windStrength = 1;
         }
         
-        var scaleFactor = (Math.log(windStrength) / Math.log(10)) * windSymbol.scale;
+        var scaleFactor = windStrength != 0 ? (Math.log(windStrength) / Math.log(10)) * windSymbol.scale : 0;
         var windAngle = 0;
         switch ( windDirection ) {
           case 'N':
