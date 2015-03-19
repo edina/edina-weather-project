@@ -5,59 +5,83 @@
 var eclipseAnimation = function(moves, slider) {
     'use strict';
 
-    var eclipseWidth = $(".eclipse").width();
-    var step = Math.floor(150/moves);
-    var colors = {
-        0: "#59BBE5",
-        10: "#3B7D99",
-        20: "#357089",
-        30: "#1E3E4C",
-        40: "#000000",
-        50: "#1E3E4C",
-        60: "#357089",
-        70: "#59BBE5"
-    }
+    var $moon = $(".moon");
+    var $eclipse = $(".eclipse");
+    var eclipseWidth = $eclipse.width();
+    var INITIAL_POS = eclipseWidth/2 - 80;
+    var FINAL_POS = eclipseWidth/2 + 50;
+    //console.log(INITIAL_POS, FINAL_POS)
+    var sunPosition = $(".sun").position().left;
+    $moon.css({"left": INITIAL_POS});
+    var step = Math.floor((FINAL_POS - INITIAL_POS)/moves);
+    var skyColors = {
+        20: ["#90dffe", "#38a3d1"],
+        30: ["#6CA7BF","#59BBE5"],
+        40: ["#48707F","#1C5269"],
+        50: ["#243840","#0E2934"],
+        60: ["#000000","#000000"],
+        70: ["#243840","#0E2934"],
+        80: ["#48707F","#1C5269"],
+        90: ["#48707F","#1C5269"],
+        100: ["#90dffe", "#38a3d1"]
+    };
 
     var animateEclipse = function(value) {
-        var s = eclipseWidth/2 - 75 + (step * value);
-        moveMoon(s);
-    }
+        var s = INITIAL_POS + (step * value);
+        moveMoonWithAnimation(s);
+    };
 
-    var moveMoon = function(pos, duration) {
+    /**
+     * move eclipse without animation
+     * @param value {Number} step
+     */
+    var moveEclipse = function(value){
+        var s = INITIAL_POS + (step * value);
+        $moon.css({"left": s});
+    };
+
+    /**
+     * move eclipse with animation
+     * @param pos {Number} x position in px
+     * @param duration {Number} duration in ms
+     */
+    var moveMoonWithAnimation = function(pos, duration) {
         duration = duration || 500;
+        pos = pos || FINAL_POS;
         //console.log(duration)
-        $(".moon").animate({
+        $moon.animate({
             left: pos
         },
         {
             easing: "linear",
             duration: duration,
-            step: function( now, fx ) {
-                if (now >= eclipseWidth/2 - 50 && now <= eclipseWidth/2 + 25){
-                    //console.log(eclipseWidth/2-now+25)
-                    var n = Math.round((eclipseWidth/2-now+25)/10)*10;
-                    var color = colors[n];
-                    $('.eclipse').css({"background-color": color});
-                    $('.moon').css({"background-color": color});
+            step: $.proxy(function( now, fx ) {
+                if (now >= sunPosition -50 && now <= sunPosition + 100){
+                    var n = Math.round((50+sunPosition-now)/10)*10;
+                    var colors = skyColors[n];
+                    if(colors){
+                        $eclipse.css({"background": "linear-gradient(to bottom, "+colors[0]+" 0%,"+colors[1]+" 100%)"});
+                        $moon.css({"background": "linear-gradient(to bottom, "+colors[0]+" -50%,"+colors[1]+" 125%)"});
+                    }
                 }
                 else{
-                    $('.eclipse').css({"background-color": "#59BBE5"});
+                    resetColors();
                 }
-            },
-            progress: function(animation, progress, remainingMs){
-                //console.log(progress)
-            }
+            }, this)
         });
+    };
+
+    /**
+     * reset colors
+     */
+    var resetColors = function(){
+        $eclipse.css({"background": "linear-gradient(to bottom, #90dffe 0%,#38a3d1 100%)"});
+        $moon.css({"background": "linear-gradient(to bottom, #90dffe -50%,#38a3d1 125%)"});
     }
 
-    //$("#animate").click(function(){
-    //    $(".earth").addClass("earth-animate");
-    //});
+    //NOT-USED
     var createAnimation = function(){
         var rules = [];
-        
-        console.log(eclipseWidth)
-        console.log((eclipseWidth - 100)/moves)
         var percentageStep = Math.floor(100/moves);
         rules.push('@-webkit-keyframes earth-slider {');
         rules.push('0% {left: 50px;}');
@@ -71,17 +95,26 @@ var eclipseAnimation = function(moves, slider) {
         rules.push('}');
         //$('body').addClass(rules.join(" "));
         console.log(rules.join(" "))
-        $('.moon').css({'animation': 'earth-slider 10s'})
+        $moon.css({'animation': 'earth-slider 10s'})
     }
 
+    //EVENTS
     $(slider).on('slide', function(event, ui) {
-        var pos = eclipseWidth/2 + 75;
         if(isPlaying){
-            moveMoon(pos, 21422);
+            moveMoonWithAnimation(FINAL_POS, 21422);
         }
         else{
             animateEclipse(ui.value);
         }
+    });
+
+    $("#stop").click(function(){
+        $moon.stop(true);
+    });
+    $("#play").click(function(){
+        moveEclipse(0);
+        resetColors();
+        moveMoonWithAnimation(FINAL_POS, 21422);
     });
 };
 
