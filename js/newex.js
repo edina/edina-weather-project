@@ -254,7 +254,7 @@
 //        .attr("clip-path", "url(#ukClipPath);")
         .attr('stroke', '#333')
         .attr('class', 'clouds')
-        .attr('style', function (d, i) {
+        .attr('fill', function (d, i) {
           return transformCloudFill(0, d, i);
         });
 
@@ -289,13 +289,13 @@
         var point = d.Period[1].Rep[value];
         var cover = point.W;
         if (cover <= 3) {
-          return 'fill:yellow';
+          return 'yellow';
         } else if (cover === 8) {
-          return 'fill:white';
+          return 'white';
         } else if (cover <= 7) {
-          return 'fill:black';
+          return 'black';
         } else {
-          return 'fill:blue';
+          return 'blue';
         }
       };
       // Moves the symbols on the map
@@ -308,7 +308,7 @@
           .attr('stroke', '#333')
           //  .attr('fill', function(d, i) {
           //    return transformCloudFill( value, d, i );
-          .attr('style', function (d, i) {
+          .attr('fill', function (d, i) {
             return transformCloudFill(value, d, i);
 
           }).duration(1) // hides the messy transform between shapes;
