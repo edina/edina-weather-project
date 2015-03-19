@@ -1,5 +1,6 @@
 h1, h2, #intro{
-  text-align: center;
+  text-align: center ;
+    vertical-align: top ;
   font-weight: normal;
 }
 
@@ -14,9 +15,7 @@ h2{
   margin: 15px;
 }
 
-#edinalogo{
-    vertical-align: text-top;
-}
+
 
 #intro{
   width: 800px;
@@ -52,7 +51,7 @@ h2{
   float: left;
   width: 2.55em;
 }
-
+/*
 #play{
   width: 53px;
   height: 53px;
@@ -61,11 +60,12 @@ h2{
   margin-left: 20px;
   cursor: pointer;
 }
-
+*/
 #play:hover{
   background-position: 0 -53px;
 }
-
+/*
 #play.pause{
   background-image: url(../images/pause.png);
 }
+*/
