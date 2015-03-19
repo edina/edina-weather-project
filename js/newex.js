@@ -22,12 +22,20 @@
   var layers = $('#layers').on('click', function (e) {
     // event handler
     var value = e.target.value;
+    var state = e.target.checked;
+    var item;
     if (value === 'temperature') {
-      $('#canvasImage').toggle();
+      item = $('#canvasImage');
     } else if (value === 'wind') {
-      $('.wind').toggle();
+      item = $('.wind');
     } else if (value === 'cloud') {
-      $('.clouds').toggle();
+      item = $('.clouds');
+    }
+    if ( state ) {
+      item.show();
+    }
+    else {
+      item.hide();
     }
   });
 
