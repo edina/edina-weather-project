@@ -69,7 +69,6 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
                         .append('path')
                         .attr('class', ecliseShadowClass)
                         .attr('fill', 'rgba(0,0,0,0.1)')
-                        .attr('stroke-width', '0')
                         .attr('stroke', 'none')
                         .attr('d', path);
 
@@ -180,13 +179,13 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
       * The slider return steps instead of unix time
       * try to convert them to unix time
     */
+    var START_DATE = ((new Date(2015, 3 - 1, 20)).getTime() / 1000);
+    var END_DATE = ((new Date(2015, 3 - 1, 20, 12)).getTime() / 1000);
     var intervalToUnixTime = function(value) {
-        var start = 1426838400;
-        var end = 1426849200;
         var maxSlider = $(sliderElement).data().uiSlider.max;
-        var ratio = (end - start) / maxSlider;
+        var ratio = (END_DATE - START_DATE) / maxSlider;
 
-        return start + (value * ratio);
+        return START_DATE + (value * ratio);
     };
 
     var loadEclipsePath = $.getJSON('data/2015_eclipse_path.geojson');
