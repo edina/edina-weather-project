@@ -120,10 +120,14 @@
     d3.json("http://datapoint.metoffice.gov.uk/public/data/val/wxobs/all/json/all?res=hourly&key=76f2c909-4e4b-4239-87fe-b7602605093e", function (error, data) {
       if (error) return console.error(error);
 
+      // Set slider size
+      ANIMATION_MOVES = data.SiteRep.DV.Location[0].Period[1].Rep.length - 2;
+      $("#slider").slider('option',{min: 0, max: ANIMATION_MOVES});
       // Heatmap
-
-
       doHeatMap(0);
+      
+      // Start eclise animation now we know the size of the data
+      eclipseAnimation(ANIMATION_MOVES, slider);
 
       var symb = svg.selectAll('.symb')
         .data(data.SiteRep.DV.Location)
@@ -378,7 +382,4 @@
     // Put the shadow elements in the map
     eclipseShadow(svg, projection, slider, layers);
   }); // end of async map data
-
-  eclipseAnimation(ANIMATION_MOVES, slider);
-
 })();
