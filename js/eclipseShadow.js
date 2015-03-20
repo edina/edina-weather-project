@@ -5,23 +5,23 @@
 /* global topojson: false */
 var eclipseShadow = function(map, projection, sliderElement, layerControlElement) {
     'use strict';
-    var eclisePathClass = 'eclipse-path';
-    var eclisePathLayerClass = 'eclipse-path-layer';
-    var ecliseShadowClass = 'eclipse-shadow';
-    var ecliseShadowLayerClass = 'eclipse-shadow-layer';
-    var ecliseMaxShadowClass = 'eclipse-max-shadow';
-    var ecliseMaxShadowLayerClass = 'eclipse-max-shadow-layer';
+    var eclipsePathClass = 'eclipse-path';
+    var eclipsePathLayerClass = 'eclipse-path-layer';
+    var eclipseShadowClass = 'eclipse-shadow';
+    var eclipseShadowLayerClass = 'eclipse-shadow-layer';
+    var eclipseMaxShadowClass = 'eclipse-max-shadow';
+    var eclipseMaxShadowLayerClass = 'eclipse-max-shadow-layer';
 
     var renderEclipsePath = function(map, projection, eclipsePath) {
         var path = d3.geo.path().projection(projection);
 
         map.append('g')
-            .attr('class', eclisePathLayerClass)
-            .selectAll(eclisePathClass)
+            .attr('class', eclipsePathLayerClass)
+            .selectAll(eclipsePathClass)
             .data([eclipsePath])
             .enter()
             .append('path')
-            .attr('class', eclisePathClass)
+            .attr('class', eclipsePathClass)
             .attr('fill', 'none')
             .attr('stroke', 'black')
             .attr('d', path);
@@ -35,12 +35,12 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
                                             .objects['2015_eclipse_max_shadow']);
 
         map.append('g')
-            .attr('class', ecliseMaxShadowLayerClass)
-            .selectAll(ecliseMaxShadowClass)
+            .attr('class', eclipseMaxShadowLayerClass)
+            .selectAll(eclipseMaxShadowClass)
             .data(topology.features)
             .enter()
             .append('path')
-            .attr('class', ecliseMaxShadowClass)
+            .attr('class', eclipseMaxShadowClass)
             .attr('display', 'none')
             .attr('fill', function(d) {
                 var maxAlpha = 0.8;
@@ -61,13 +61,13 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
                                             .objects['2015_eclipse_times']);
 
         var g = map.append('g')
-                   .attr('class', ecliseShadowLayerClass);
+                   .attr('class', eclipseShadowLayerClass);
         var polygons = g
-                        .selectAll(ecliseShadowClass)
+                        .selectAll(eclipseShadowClass)
                         .data(topology.features)
                         .enter()
                         .append('path')
-                        .attr('class', ecliseShadowClass)
+                        .attr('class', eclipseShadowClass)
                         .attr('fill', 'rgba(0,0,0,0.1)')
                         .attr('stroke', 'none')
                         .attr('d', path);
@@ -143,23 +143,24 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
     var addLayerControls = function() {
         var pathControlTemplate = (
             '<div class="checkbox">' +
-                '<label><input type="checkbox" checked value="' + eclisePathLayerClass + '">Eclipse Path</label>' +
+                '<label><input type="checkbox" checked value="' + eclipsePathLayerClass + '">Eclipse Path</label>' +
             '</div>'
         );
 
         var shadowMaxControlTemplate = (
             '<div class="checkbox">' +
-                '<label><input type="checkbox" value="' + ecliseMaxShadowLayerClass + '">Eclipse Maximum Shadow</label>' +
+                '<label><input type="checkbox" value="' + eclipseMaxShadowLayerClass + '">Eclipse Maximum Shadow</label>' +
             '</div>'
         );
 
         var shadowControlTemplate = (
             '<div class="checkbox">' +
-                '<label><input type="checkbox" checked value="' + ecliseShadowLayerClass + '">Eclipse Shadow</label>' +
+                '<label><input type="checkbox" checked value="' + eclipseShadowLayerClass + '">Eclipse Shadow</label>' +
             '</div>'
         );
 
         $(layerControlElement)
+            .find('> div')
             .append(pathControlTemplate)
             .append(shadowMaxControlTemplate)
             .append(shadowControlTemplate)
