@@ -88,7 +88,7 @@ var averageCharts = (function () {
       .attr("y", -45)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Temperature");
+      .text("Average Temperature");
 
     svg.selectAll("bar")
       .data(data)
@@ -187,7 +187,7 @@ var averageCharts = (function () {
       .attr("y", -45)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Wind Speed");
+      .text("Average Wind Speed");
 
     svg.selectAll("bar")
       .data(data)
@@ -202,6 +202,105 @@ var averageCharts = (function () {
       })
       .attr("height", function (d) {
         return height - y(d.windspeed);
+      });
+
+
+
+    svg.selectAll("g.x.axis g.tick line")
+      .attr("y2", function (d) {
+        //d for the tick line is the value
+        //of that tick 
+        //(a number between 0 and 1, in this case)
+        if (d.getMinutes() === 0 || d.getMinutes() === 30) {
+          return 5;
+        } else {
+          //hide text
+          $(this).next().hide();
+          return 0;
+        }
+      });
+
+
+
+  }
+
+
+  function createCloudChart(data) {
+
+    var svg = d3.select("#cloud_chart").append("svg")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+      .attr("transform",
+        "translate(" + margin.left + "," + margin.top + ")");
+
+    var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom")
+      .tickFormat(d3.time.format("%H:%M"));
+
+
+    var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left").outerTickSize(6);
+
+
+
+    data.forEach(function (d) {
+      d.time = parseDate(d.time);
+      d.cloud = +d.cloud;
+    });
+
+
+    x.domain(data.map(function (d) {
+      return d.time;
+    }));
+
+
+    minDataValue = d3.min(data, function (d) {
+      return d.cloud;
+    });
+    maxDataValue = d3.max(data, function (d) {
+      return d.cloud;
+    });
+    y.domain([minDataValue, maxDataValue]);
+
+
+
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-90)");
+
+
+    svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -45)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Average Cloud Cover");
+
+    svg.selectAll("bar")
+      .data(data)
+      .enter().append("rect")
+      .style("fill", "steelblue")
+      .attr("x", function (d) {
+        return x(d.time);
+      })
+      .attr("width", x.rangeBand())
+      .attr("y", function (d) {
+        return y(d.cloud);
+      })
+      .attr("height", function (d) {
+        return height - y(d.cloud);
       });
 
 
@@ -238,6 +337,13 @@ var averageCharts = (function () {
           var data = d.wind;
           createWindChart(data);
         });
+      var testWindData = "testdata/cloud.json";
+      $.getJSON(testWindData)
+        .done(function (d) {
+          var data = d.cloudcover;
+          createCloudChart(data);
+        });
+
 
 
 
@@ -268,14 +374,23 @@ var averageCharts = (function () {
 
     },
     changeToWindSpeed = function () {
-
+      $('#container_cloud_chart').hide();
       $('#container_temp_chart').hide();
       $('#container_wind_chart').fadeIn(1000);
 
     },
     changeToTemperature = function () {
       $('#container_wind_chart').hide();
+      $('#container_cloud_chart').hide();
       $('#container_temp_chart').fadeIn(1000);
+
+
+    },
+    changeToCloud = function () {
+      $('#container_wind_chart').hide();
+
+      $('#container_temp_chart').hide();
+      $('#container_cloud_chart').fadeIn(1000);
 
 
     };
@@ -283,7 +398,8 @@ var averageCharts = (function () {
     init: init,
     highlightTime: highlightTime,
     changeToWindSpeed: changeToWindSpeed,
-    changeToTemperature: changeToTemperature
+    changeToTemperature: changeToTemperature,
+    changeToCloud: changeToCloud
   }
 
 })();
@@ -311,6 +427,7 @@ $(document).ready(function () {
   var charts = averageCharts;
   charts.init();
   $('#container_wind_chart').hide();
+  $('#container_cloud_chart').hide();
   $("#windSpeedBut").click(function () {
 
     charts.changeToWindSpeed();
@@ -318,5 +435,9 @@ $(document).ready(function () {
   $("#tempBut").click(function () {
 
     charts.changeToTemperature();
+  });
+  $("#cloudCoverBut").click(function () {
+
+    charts.changeToCloud();
   });
 });
