@@ -63,7 +63,7 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
 
         var g = map.append('g')
                    .attr('class', eclipseShadowLayerClass)
-                   //.attr('display', 'none');
+                   .attr('display', 'none');
         var polygons = g
                         .selectAll(eclipseShadowClass)
                         .data(topology.features)
@@ -149,6 +149,10 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
                 '<label><input type="checkbox" ' + checked + ' value="' + cssClass + '">' + label + '</label>' +
             '</div>'
         );
+
+        if (isChecked === true) {
+            $('.' + cssClass).show();
+        }
 
         $(layerControlElement)
             .find('> div')
