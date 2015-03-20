@@ -173,8 +173,8 @@ var eclipseShadow = function(map, projection, sliderElement, layerControlElement
       * The slider return steps instead of unix time
       * try to convert them to unix time
     */
-    var START_DATE = ((new Date(2015, 3 - 1, 20)).getTime() / 1000);
-    var END_DATE = ((new Date(2015, 3 - 1, 20, 12)).getTime() / 1000);
+    var START_DATE = ((new Date(2015, 3 - 1, 20, 7)).getTime() / 1000);
+    var END_DATE = ((new Date(2015, 3 - 1, 20, 11)).getTime() / 1000);
     var intervalToUnixTime = function(value) {
         var maxSlider = $(sliderElement).data().uiSlider.max;
         var ratio = (END_DATE - START_DATE) / maxSlider;
