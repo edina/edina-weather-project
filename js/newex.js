@@ -85,7 +85,7 @@
   // Load the data
   d3.json("gb8.json", function (error, uk) {
     if (error) return console.error(error);
-
+console.log(uk.objects);
     var gb = topojson.feature(uk, uk.objects.gb);
 
     var path = d3.geo.path().projection(projection);
