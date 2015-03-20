@@ -31,11 +31,13 @@
     } else if (value === 'cloud') {
       item = $('.clouds');
     }
-    if ( state ) {
-      item.show();
-    }
-    else {
-      item.hide();
+    if(item !== undefined) {
+      if ( state ) {
+        item.show();
+      }
+      else {
+        item.hide();
+      }
     }
   });
 
@@ -156,7 +158,7 @@
 
         var windDirection = point.D;
         var windStrength = point.S;
-        
+
         // Set some crappy defaults as sometimes data is missing
         // Not great but will do for a test visualisation
         if ( !windDirection ) {
@@ -165,7 +167,7 @@
         if ( !windStrength ) {
           windStrength = 1;
         }
-        
+
         var scaleFactor = windStrength != 0 ? (Math.log(windStrength) / Math.log(10)) * windSymbol.scale : 0;
         var windAngle = 0;
         switch ( windDirection ) {
@@ -238,11 +240,11 @@
         .data(data.SiteRep.DV.Location)
         .enter().append('path')
         .select(function (d, i) {
-            if("HEATHROW" == d.name || "SHEFFIELD CDL" == d.name || "CASTLEDERG" == d.name || "EDINBURGH\/GOGARBANK" == d.name || "RHYL" == d.name || "HEREFORD" == d.name || "CULDROSE" == d.name || "PRESTWICK RNAS" == d.name || "ABERDEEN DYCE" == d.name 
+            if("HEATHROW" == d.name || "SHEFFIELD CDL" == d.name || "CASTLEDERG" == d.name || "EDINBURGH\/GOGARBANK" == d.name || "RHYL" == d.name || "HEREFORD" == d.name || "CULDROSE" == d.name || "PRESTWICK RNAS" == d.name || "ABERDEEN DYCE" == d.name
                || "LERWICK (S. SCREEN)" == d.name
-               || "CARDINHAM" == d.name 
+               || "CARDINHAM" == d.name
                || "ALDERGROVE" == d.name
-               || "TULLOCH BRIDGE" == d.name 
+               || "TULLOCH BRIDGE" == d.name
                || "WARCOP" == d.name
                || "MILFORD HAVEN C.B." == d.name
                || "STORNOWAY" == d.name
@@ -275,7 +277,7 @@
         var lat = d['lat'];
         var lon = d['lon'];
         var coord = projection([lon, lat]);
-        
+
         return 'translate(' + (coord[0] - 20) + ',' + (coord[1] - 20) + ') scale(0.8)';
       };
 
@@ -283,7 +285,7 @@
 
         var point = d.Period[1].Rep[value];
         var cover = point.W;
-        
+
         var symbol = null;
         if (cover <= 3) {
           symbol = 'sun';
@@ -392,9 +394,12 @@
 
 
     // Put the shadow elements in the map
-    eclipseShadow(svg, projection, slider, layers);
+    var shadowElements = eclipseShadow(svg, projection, slider, layers);
+    shadowElements.addEclipseShadow(true);
+    shadowElements.addEclipseMaxShadow(false);
+    shadowElements.addEclipsePath(false);
   }); // end of async map data
-      
+
   // Start eclise animation now we know the size of the data
   eclipseAnimation(ANIMATION_MOVES, slider);
 })();
