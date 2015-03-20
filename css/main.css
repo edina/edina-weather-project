@@ -18,13 +18,18 @@ h2{
   font-size: 18px;
   color: #999;
   margin: 15px;
-    margin-top: 20px;
+  margin-top: 20px;
 }
 
+.header {
+  position: absolute;
+}
 
+.middle {
+  margin-top: 130px;
+}
 
 .edinalogo{
-float:left;
 	width:136px;
 	height:63px;
 	margin-left:15px;
