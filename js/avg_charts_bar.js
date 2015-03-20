@@ -86,17 +86,59 @@ var averageCharts = (function () {
 
   }
 
-
-  function createTempChart(data) {
-
-    var svg = d3.select("#temp_chart").append("svg")
+  function createMainSvg(id) {
+    var svg = d3.select(id).append("svg")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
       .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
+    return svg;
 
+  }
+
+  function createBars(svg, data, yAccessor, hAccessor) {
+
+    svg.selectAll("bar")
+      .data(data)
+      .enter().append("rect")
+      .style("fill", "steelblue")
+      .attr("x", function (d) {
+        return x(d.time);
+      })
+      .attr("width", x.rangeBand())
+      .attr("y", yAccessor)
+      .attr("height", hAccessor);
+
+  }
+  
+  function createTimeLine(svg){
+    return svg.append("line")
+      .attr("x1", 0)
+      .attr("y1", 0)
+      .attr("x2", 0)
+      .attr("y2", timelineHeight)
+      .attr("stroke-width", 3)
+      .attr("stroke", "red");
+    
+  }
+
+  function createTimeLabel(svg){
+    
+    return svg.append("text")
+      .attr("x", labelTimeOffset)
+      .attr("y", 0)
+      .text("current time")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "10px")
+      .attr("fill", "red");
+
+  }
+
+  function createTempChart(data) {
+
+    var svg = createMainSvg("#temp_chart");
 
     data.forEach(function (d) {
       d.time = parseDate(d.time);
@@ -122,44 +164,20 @@ var averageCharts = (function () {
 
     createYAxis(svg);
 
-
-
-
-    svg.selectAll("bar")
-      .data(data)
-      .enter().append("rect")
-      .style("fill", "steelblue")
-      .attr("x", function (d) {
-        return x(d.time);
-      })
-      .attr("width", x.rangeBand())
-      .attr("y", function (d) {
-        return y(d.temp);
-      })
-      .attr("height", function (d) {
-        return height - y(d.temp);
-      });
+    createBars(svg, data, function (d) {
+      return y(d.temp);
+    }, function (d) {
+      return height - y(d.temp);
+    });
 
 
     thinTicks(svg);
 
 
 
-    tempTimeLine = svg.append("line")
-      .attr("x1", 0)
-      .attr("y1", 0)
-      .attr("x2", 0)
-      .attr("y2", timelineHeight)
-      .attr("stroke-width", 3)
-      .attr("stroke", "red");
-
-    tempTimeLabel = svg.append("text")
-      .attr("x", labelTimeOffset)
-      .attr("y", 0)
-      .text("current time")
-      .attr("font-family", "sans-serif")
-      .attr("font-size", "10px")
-      .attr("fill", "red");
+    tempTimeLine = createTimeLine(svg);
+    tempTimeLabel = createTimeLabel(svg);
+    
     svgTemp = svg;
 
   }
@@ -167,15 +185,7 @@ var averageCharts = (function () {
 
   function createWindChart(data) {
 
-    var svg = d3.select("#wind_chart").append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform",
-        "translate(" + margin.left + "," + margin.top + ")");
-
-
-
+    var svg = createMainSvg("#wind_chart");
 
 
     data.forEach(function (d) {
@@ -202,53 +212,23 @@ var averageCharts = (function () {
     createXAxis(svg);
     createYAxis(svg);
 
-    svg.selectAll("bar")
-      .data(data)
-      .enter().append("rect")
-      .style("fill", "steelblue")
-      .attr("x", function (d) {
-        return x(d.time);
-      })
-      .attr("width", x.rangeBand())
-      .attr("y", function (d) {
-        return y(d.windspeed);
-      })
-      .attr("height", function (d) {
-        return height - y(d.windspeed);
-      });
-
+    createBars(svg, data, function (d) {
+      return y(d.windspeed);
+    }, function (d) {
+      return height - y(d.windspeed);
+    });
 
 
     thinTicks(svg);
 
-    windTimeLine = svg.append("line")
-      .attr("x1", 0)
-      .attr("y1", 0)
-      .attr("x2", 0)
-      .attr("y2", timelineHeight)
-      .attr("stroke-width", 3)
-      .attr("stroke", "red");
-
-    windTimeLabel = svg.append("text")
-      .attr("x", labelTimeOffset)
-      .attr("y", 0)
-      .text("current time")
-      .attr("font-family", "sans-serif")
-      .attr("font-size", "10px")
-      .attr("fill", "red");
+    windTimeLine = createTimeLine(svg);
+    windTimeLabel = createTimeLabel(svg);
   }
 
 
   function createCloudChart(data) {
 
-    var svg = d3.select("#cloud_chart").append("svg")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-      .append("g")
-      .attr("transform",
-        "translate(" + margin.left + "," + margin.top + ")");
-
-
+    var svg = createMainSvg("#cloud_chart");
 
     data.forEach(function (d) {
       d.time = parseDate(d.time);
@@ -274,39 +254,18 @@ var averageCharts = (function () {
     createXAxis(svg);
     createYAxis(svg);
 
-    svg.selectAll("bar")
-      .data(data)
-      .enter().append("rect")
-      .style("fill", "steelblue")
-      .attr("x", function (d) {
-        return x(d.time);
-      })
-      .attr("width", x.rangeBand())
-      .attr("y", function (d) {
-        return y(d.cloud);
-      })
-      .attr("height", function (d) {
-        return height - y(d.cloud);
-      });
+
+    createBars(svg, data, function (d) {
+      return y(d.cloud);
+    }, function (d) {
+      return height - y(d.cloud);
+    });
 
 
     thinTicks(svg);
 
-    cloudTimeLine = svg.append("line")
-      .attr("x1", 0)
-      .attr("y1", 0)
-      .attr("x2", 0)
-      .attr("y2", timelineHeight)
-      .attr("stroke-width", 3)
-      .attr("stroke", "red");
-    cloudTimeLabel = svg.append("text")
-      .attr("x", labelTimeOffset)
-      .attr("y", 0)
-      .text("current time")
-      .attr("font-family", "sans-serif")
-      .attr("font-size", "10px")
-      .attr("fill", "red");
-
+    cloudTimeLine = createTimeLine(svg);
+    cloudTimeLabel = createTimeLabel(svg)
 
   }
   var init = function () {
