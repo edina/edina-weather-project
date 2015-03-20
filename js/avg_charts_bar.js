@@ -31,6 +31,61 @@ var averageCharts = (function () {
   var y = d3.scale.linear()
     .range([height, 0]);
 
+  function createXAxis(svg) {
+    var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom")
+      .tickFormat(d3.time.format("%H:%M"));
+
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      .selectAll("text")
+      .style("text-anchor", "end")
+      .attr("dx", "-.8em")
+      .attr("dy", "-.55em")
+      .attr("transform", "rotate(-90)");
+
+  }
+
+  function createYAxis(svg) {
+
+    var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left").outerTickSize(6);
+
+    svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+      .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", -45)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Average Temperature");
+
+
+
+  }
+
+  function thinTicks(svg) {
+    svg.selectAll("g.x.axis g.tick line")
+      .attr("y2", function (d) {
+        //d for the tick line is the value
+        //of that tick 
+        //(a number between 0 and 1, in this case)
+        if (d.getMinutes() === 0 || d.getMinutes() === 30) {
+          return 5;
+        } else {
+          //hide text
+          $(this).next().hide();
+          return 0;
+        }
+      });
+
+  }
+
 
   function createTempChart(data) {
 
@@ -40,18 +95,6 @@ var averageCharts = (function () {
       .append("g")
       .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
-
-
-
-    var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient("bottom")
-      .tickFormat(d3.time.format("%H:%M"));
-
-
-    var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left").outerTickSize(6);
 
 
 
@@ -75,26 +118,12 @@ var averageCharts = (function () {
 
 
 
-    svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
-      .selectAll("text")
-      .style("text-anchor", "end")
-      .attr("dx", "-.8em")
-      .attr("dy", "-.55em")
-      .attr("transform", "rotate(-90)");
+    createXAxis(svg);
+
+    createYAxis(svg);
 
 
-    svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-      .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", -45)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Average Temperature");
+
 
     svg.selectAll("bar")
       .data(data)
@@ -112,20 +141,9 @@ var averageCharts = (function () {
       });
 
 
+    thinTicks(svg);
 
-    svg.selectAll("g.x.axis g.tick line")
-      .attr("y2", function (d) {
-        //d for the tick line is the value
-        //of that tick 
-        //(a number between 0 and 1, in this case)
-        if (d.getMinutes() === 0 || d.getMinutes() === 30) {
-          return 5;
-        } else {
-          //hide text
-          $(this).next().hide();
-          return 0;
-        }
-      });
+
 
     tempTimeLine = svg.append("line")
       .attr("x1", 0)
@@ -156,15 +174,7 @@ var averageCharts = (function () {
       .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
-    var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient("bottom")
-      .tickFormat(d3.time.format("%H:%M"));
 
-
-    var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left").outerTickSize(6);
 
 
 
@@ -189,26 +199,8 @@ var averageCharts = (function () {
 
 
 
-    svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
-      .selectAll("text")
-      .style("text-anchor", "end")
-      .attr("dx", "-.8em")
-      .attr("dy", "-.55em")
-      .attr("transform", "rotate(-90)");
-
-
-    svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-      .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", -45)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Average Wind Speed");
+    createXAxis(svg);
+    createYAxis(svg);
 
     svg.selectAll("bar")
       .data(data)
@@ -227,19 +219,7 @@ var averageCharts = (function () {
 
 
 
-    svg.selectAll("g.x.axis g.tick line")
-      .attr("y2", function (d) {
-        //d for the tick line is the value
-        //of that tick 
-        //(a number between 0 and 1, in this case)
-        if (d.getMinutes() === 0 || d.getMinutes() === 30) {
-          return 5;
-        } else {
-          //hide text
-          $(this).next().hide();
-          return 0;
-        }
-      });
+    thinTicks(svg);
 
     windTimeLine = svg.append("line")
       .attr("x1", 0)
@@ -268,16 +248,6 @@ var averageCharts = (function () {
       .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
-    var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient("bottom")
-      .tickFormat(d3.time.format("%H:%M"));
-
-
-    var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left").outerTickSize(6);
-
 
 
     data.forEach(function (d) {
@@ -301,26 +271,8 @@ var averageCharts = (function () {
 
 
 
-    svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis)
-      .selectAll("text")
-      .style("text-anchor", "end")
-      .attr("dx", "-.8em")
-      .attr("dy", "-.55em")
-      .attr("transform", "rotate(-90)");
-
-
-    svg.append("g")
-      .attr("class", "y axis")
-      .call(yAxis)
-      .append("text")
-      .attr("transform", "rotate(-90)")
-      .attr("y", -45)
-      .attr("dy", ".71em")
-      .style("text-anchor", "end")
-      .text("Average Cloud Cover");
+    createXAxis(svg);
+    createYAxis(svg);
 
     svg.selectAll("bar")
       .data(data)
@@ -338,20 +290,7 @@ var averageCharts = (function () {
       });
 
 
-
-    svg.selectAll("g.x.axis g.tick line")
-      .attr("y2", function (d) {
-        //d for the tick line is the value
-        //of that tick 
-        //(a number between 0 and 1, in this case)
-        if (d.getMinutes() === 0 || d.getMinutes() === 30) {
-          return 5;
-        } else {
-          //hide text
-          $(this).next().hide();
-          return 0;
-        }
-      });
+    thinTicks(svg);
 
     cloudTimeLine = svg.append("line")
       .attr("x1", 0)
