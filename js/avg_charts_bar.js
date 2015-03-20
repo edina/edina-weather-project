@@ -374,21 +374,29 @@ var averageCharts = (function () {
 
     },
     changeToWindSpeed = function () {
+      $('#tempBut').css("background-color", "")
+      $('#cloudCoverBut').css("background-color", "")
       $('#container_cloud_chart').hide();
       $('#container_temp_chart').hide();
+      $('#windSpeedBut').css("background-color", "steelblue")
       $('#container_wind_chart').fadeIn(1000);
 
     },
     changeToTemperature = function () {
+      $('#windSpeedBut').css("background-color", "")
+      $('#cloudCoverBut').css("background-color", "")
       $('#container_wind_chart').hide();
       $('#container_cloud_chart').hide();
+      $('#tempBut').css("background-color", "steelblue")
       $('#container_temp_chart').fadeIn(1000);
 
 
     },
     changeToCloud = function () {
+      $('#tempBut').css("background-color", "")
+      $('#windSpeedBut').css("background-color", "")
       $('#container_wind_chart').hide();
-
+      $('#cloudCoverBut').css("background-color", "steelblue")
       $('#container_temp_chart').hide();
       $('#container_cloud_chart').fadeIn(1000);
 
