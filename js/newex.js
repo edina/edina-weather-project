@@ -238,7 +238,24 @@
         .data(data.SiteRep.DV.Location)
         .enter().append('path')
         .select(function (d, i) {
-          return i % 10 === 0 ? this : null;
+            if("HEATHROW" == d.name || "SHEFFIELD CDL" == d.name || "CASTLEDERG" == d.name || "EDINBURGH\/GOGARBANK" == d.name || "RHYL" == d.name || "HEREFORD" == d.name || "CULDROSE" == d.name || "PRESTWICK RNAS" == d.name || "ABERDEEN DYCE" == d.name 
+               || "LERWICK (S. SCREEN)" == d.name
+               || "CARDINHAM" == d.name 
+               || "ALDERGROVE" == d.name
+               || "TULLOCH BRIDGE" == d.name 
+               || "WARCOP" == d.name
+               || "MILFORD HAVEN C.B." == d.name
+               || "STORNOWAY" == d.name
+              )
+            {
+                return this ;
+            }
+            else
+            {
+                return null ;
+            }
+                // return i % 10 === 0 ? this : null;
+            // return this ;
         })
         .attr('transform', function (d, i) {
           return transformCloud(0, d, i);

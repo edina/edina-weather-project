@@ -1,26 +1,48 @@
-h1, h2, #intro{
+html, body{
+  margin: 0;
+  font: 14px/16px "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+h1, h2{
   text-align: center ;
-    vertical-align: top ;
   font-weight: normal;
 }
 
 h1{
+  
   font-size: 30px;
-  margin: 20px;
+  margin: 15px;
   color: #1a1a1a;
 }
 h2{
   font-size: 18px;
   color: #999;
   margin: 15px;
+    margin-top: 20px;
 }
 
 
 
+.edinalogo{
+float:left;
+	width:136px;
+	height:63px;
+	margin-left:15px;
+	margin-top:10px;
+}
+
+
 #intro{
-  width: 800px;
+  width: 800px ;
+  border-left: 2px solid #ccc;
+  border-right: 2px solid #ccc;
+  border-top: 2px solid #ccc;
+  border-bottom: 2px solid #ccc;
+  padding: 3px 3px 3px 3px;
+  text-align: center ;
   margin: auto;
-  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; font-size: 12px; font-style: normal; font-variant: normal; font-weight: normal; line-height: 18px;
+  font-family: "Helvetica Neue", Arial, Helvetica, sans-serif; font-size: 12px; font-style: normal; font-variant: normal; font-weight: normal; 
+  line-height: 18px;
 }
 
 #date, #play, #slider-container{
@@ -29,38 +51,37 @@ h2{
   margin-top: 20px;
 }
 
-#date{
+.date{
   border-left: 5px solid #ccc;
   padding: 3px 0 3px 10px;
-  margin-left: 60px;
+  margin-left: 0px;
   color: #333;
 }
-#date p{
+.date p{
   margin: 0;
 }
-#date p:first-child{
+.date p:first-child{
   color: #999;
   font-size: 11px;
   line-height: 13px;
 }
-#date p#month{
+.date p#time{
   font-size: 30px;
   line-height: 30px;
 }
-#date p#month span{
+.date p#time span{
   float: left;
   width: 2.55em;
 }
-/*
+
+
 #play{
-  width: 53px;
-  height: 53px;
-  background-image: url(../images/play.png);
+ 
   border-radius: 5px;
-  margin-left: 20px;
+  margin-left: 0px;
   cursor: pointer;
 }
-*/
+
 #play:hover{
   background-position: 0 -53px;
 }
@@ -69,3 +90,10 @@ h2{
   background-image: url(../images/pause.png);
 }
 */
+#slider{
+  margin-left: 5px;
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+
+.top-buffer { margin-top:20px; }

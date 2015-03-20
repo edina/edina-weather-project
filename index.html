@@ -27,86 +27,121 @@
 </head>
 
 <body>
- <header>
-     <div class="row">
+<header>
+     <div class="row headerblock">
     
          <div class="col-md-12">
 
-             <img src="edina.png" id="edinalogo" alt="edina logo"/>
+             <img src="edina.png" class="edinalogo" alt="edina logo"/>
 
-            <h1>National Eclipse Weather Visualisation</h1>
+            <h1>Solar Eclipse 2015: A UK Weather Map</h1>
         
-            
-             
+            <h2>An interactive map showing UK weather during the solar eclipse of March 20th</h2>
+             <br>
              <div id="intro">
-                <p> Inspired by the University of Reading National Eclipse Weather Experiment EDINA put together this visualisation showing MET office weather observations from 175 weather stations located throught the UK during the Solar Eclipse of March 20th 2015.  
-               </p>                
+                <p> Inspired by the University of Reading's genius  <a href="http://www.met.reading.ac.uk/outreach/newex_2015/index.html">National Eclipse Weather Experiment</a> citizen science project, <a href="http://edina.ac.uk/maps/"> EDINA </a> put together this interactive map to show weather changes in the UK during the solar eclipse on 20th March 2015. The map shows reports from the MET Office's excellent <a href=" http://www.metoffice.gov.uk/datapoint/product/uk-hourly-site-specific-observations/detailed-documentation#UK%20observations%20data%20feed"> DataPoint Observations feed</a> which provides hourly updates from 175 weather stations across the UK.  
+               </p> 
+                
              </div>
          </div>
        </div>
   </header>
 
-  <div class="container-fluid">
-
-    <div class="row">
-      <div class="col-md-6">
-        <div id="map"></div>
-      </div>
-      <div class="col-md-5">
-        <div class="row">
-          <div class="eclipse">
-            <div id="sun" class="sun"></div>
-            <div id="moon" class="moon"></div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-12">
     <br>
-              <div id="slider"></div>
-            <br>
-            <div id="time">Fri Mar 20 2015 00:00:00 GMT+0000 (GMT)</div>
-          </div>
+  <div class="container-fluid top-buffer">
+    <div class="row">
+        <div class="col-md-6">
+            <div id="map"></div>
         </div>
-        <div class="row">
-          <div class="col-md-1">
-            <button id="play" class="btn btn-primary"><span class="glyphicon glyphicon-play" aria-hidden="true"></span>
-            </button>
-          </div>
-          <div class="col-md-1">
-            <button id="stop" class="btn btn-primary"><span class="glyphicon glyphicon-stop" aria-hidden="true"></span>
-            </button>
-          </div>
-          <div class="col-md-4">
-            <div class="checkbox">
-              <label>
-                <input id="loop" type="checkbox"> Loop playback
-              </label>
-            </div>
-          </div>
-        </div>
-        <div class="row" id="layers">
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" checked value="wind">Wind</label>
-          </div>
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" id="temperature" checked value="temperature">Temperature</label>
-          </div>
-          <div class="checkbox">
-            <label>
-              <input type="checkbox" id="cloud" checked value="cloud">Cloud Cover</label>
-          </div>
-        </div>
-        <div class="row" id="charts">
+        <div class="col-md-5">    
+           <div class="container-fluid" >    
+            
+             
+               
+             
+           
+            
+                 <div class="row top-buffer">
+               
+              
+                    <div class="date col-md-12">
+                            <p>Fri Mar 20 2015</p>
+                            <p id="time"><span>00:00</span></p>
+                        
+                    </div>
+                   
+              </div>
+            
+               
+            <div class="row top-buffer">
+               
+                  <div class="eclipse col-md-12">
+                    <div id="sun" class="sun"></div>
+                    <div id="moon" class="moon"></div>
+                  </div>
+              
+              </div>   
+            
+               
+                
+              <div class="row top-buffer">        
+                
+                  <div class="col-md-2">
+                
+                   <button id="play" class="btn btn-primary"><span class="glyphicon glyphicon-play" aria-hidden="true"></span>
+                      </button>
+                  </div>
+                    <div class="col-md-10">
+                        <div id="slider"></div>
+                    </div> 
+               </div>
+               
+               
+          <div class="row top-buffer">
+               
+             <div class="col-md-12">
+                   
+                   
+             <div class="row" id="charts">
           
-          <div id="temp_chart"></div>
-          <div id="wind_chart"></div>
-          <input id="windSpeedBut" type="submit" value="Wind Speed Chart" />
-        </div>
-      </div>
+                 <div id="temp_chart"></div>
+                 <div id="wind_chart"></div>
+                <input id="windSpeedBut" type="submit" value="Wind Speed Chart" />
+             </div>   
+            
+              </div>
+                   </div>
+                   
+                <div class="row top-buffer" id="layers">
+                    <div class="col-md-12">
+                    <div class="checkbox">
+                      <label>
+                           <input type="checkbox" checked value="wind"/>Wind
+                      </label>
+                    </div>
+                    <div class="checkbox">
+                       <label>
+                           <input type="checkbox" id="temperature" checked value="temperature"/>Temperature
+                         </label>
+                    </div>
+                    <div class="checkbox">
+                       <label>
+                          <input type="checkbox" id="cloud" checked value="cloud">Cloud Cover</label>
+                    </div>
+                  </div>
+                 </div>  
+                   
+                   
+                   
+                   
+                   
+                   
+                   
+            </div>
+        </div> <!-- ends column 2 --> 
+    
     </div>
-  </div>
+  </div> <!--ends  container -->
 
   <script>
     var isPlaying;
