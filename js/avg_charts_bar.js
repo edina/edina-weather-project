@@ -9,6 +9,10 @@ var averageCharts = (function () {
   var tempTimeLine;
   var windTimeLine;
   var cloudTimeLine;
+  var tempTimeLabel;
+  var windTimeLabel;
+  var cloudTimeLabel;
+  var labelTimeOffset = -15;
   var margin = {
     top: 20,
     right: 20,
@@ -18,7 +22,7 @@ var averageCharts = (function () {
   var width = 500 - margin.left - margin.right;
   var height = 300 - margin.top - margin.bottom;
   var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
-
+  var timelineHeight = height + 10;
 
 
 
@@ -127,9 +131,17 @@ var averageCharts = (function () {
       .attr("x1", 0)
       .attr("y1", 0)
       .attr("x2", 0)
-      .attr("y2", height)
+      .attr("y2", timelineHeight)
       .attr("stroke-width", 3)
       .attr("stroke", "red");
+
+    tempTimeLabel = svg.append("text")
+      .attr("x", labelTimeOffset)
+      .attr("y", 0)
+      .text("current time")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "10px")
+      .attr("fill", "red");
     svgTemp = svg;
 
   }
@@ -233,11 +245,17 @@ var averageCharts = (function () {
       .attr("x1", 0)
       .attr("y1", 0)
       .attr("x2", 0)
-      .attr("y2", height)
+      .attr("y2", timelineHeight)
       .attr("stroke-width", 3)
       .attr("stroke", "red");
-    
 
+    windTimeLabel = svg.append("text")
+      .attr("x", labelTimeOffset)
+      .attr("y", 0)
+      .text("current time")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "10px")
+      .attr("fill", "red");
   }
 
 
@@ -334,15 +352,21 @@ var averageCharts = (function () {
           return 0;
         }
       });
-    
-      cloudTimeLine = svg.append("line")
+
+    cloudTimeLine = svg.append("line")
       .attr("x1", 0)
       .attr("y1", 0)
       .attr("x2", 0)
-      .attr("y2", height)
+      .attr("y2", timelineHeight)
       .attr("stroke-width", 3)
       .attr("stroke", "red");
-
+    cloudTimeLabel = svg.append("text")
+      .attr("x", labelTimeOffset)
+      .attr("y", 0)
+      .text("current time")
+      .attr("font-family", "sans-serif")
+      .attr("font-size", "10px")
+      .attr("fill", "red");
 
 
   }
@@ -388,16 +412,10 @@ var averageCharts = (function () {
           var normalisedTempZeroToOne = d3.scale.linear().domain([minDataValue, maxDataValue]).range([0, 1]);
           var h = (1.0 - normalisedTempZeroToOne(d.temp)) * 240
           var color = "hsl(" + h + ", 50%, 50%)";
-          /*var d3this = d3.select(this);
-          if (d.time.getTime() === time.getTime()) {
-            d3this.style("fill", color)
-            d3this.style("stroke", "black");
-            d3this.style("stroke-width", 5);
-          } else {
-            d3this.style("fill", color);
-            d3this.style("stroke", "black");
-            d3this.style("stroke-width", 1);
-          }*/
+          var d3this = d3.select(this);
+
+          d3this.style("fill", color)
+
         });
       var outputX = xTimeScale(time);
       console.log(outputX);
@@ -405,21 +423,24 @@ var averageCharts = (function () {
         .attr("x1", outputX)
         .attr("y1", 5)
         .attr("x2", outputX)
-        .attr("y2", height)
+        .attr("y2", timelineHeight)
         .attr("stroke-width", 3)
         .attr("stroke", "red");
       windTimeLine.attr("x1", outputX)
         .attr("y1", 5)
         .attr("x2", outputX)
-        .attr("y2", height)
+        .attr("y2", timelineHeight)
         .attr("stroke-width", 3)
         .attr("stroke", "red")
       cloudTimeLine.attr("x1", outputX)
         .attr("y1", 5)
         .attr("x2", outputX)
-        .attr("y2", height)
+        .attr("y2", timelineHeight)
         .attr("stroke-width", 3)
         .attr("stroke", "red");
+      tempTimeLabel.attr("x", outputX + labelTimeOffset)
+      windTimeLabel.attr("x", outputX + labelTimeOffset)
+      cloudTimeLabel.attr("x", outputX + labelTimeOffset)
     },
     changeToWindSpeed = function () {
       $('#tempBut').css("background-color", "")
@@ -484,6 +505,7 @@ $(document).ready(function () {
   charts.init();
   $('#container_wind_chart').hide();
   $('#container_cloud_chart').hide();
+  $('#tempBut').css("background-color", "steelblue")
   $("#windSpeedBut").click(function () {
 
     charts.changeToWindSpeed();
