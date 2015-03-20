@@ -5,12 +5,17 @@
   var loop = $("#loop");
   var sliderPlayback = null;
   $("#play").on('click', function(btn) {
-    var start = new Date().getTime();
     if ( isPlaying ) {
+    $('#play-icon').removeClass('glyphicon-stop');
+    $('#play-icon').addClass('glyphicon-play');
+      window.clearInterval(sliderPlayback);
+      isPlaying = false;
       return;
     }
 
     isPlaying = true;
+    $('#play-icon').removeClass('glyphicon-play');
+    $('#play-icon').addClass('glyphicon-stop');
     var i = 0;
     sliderPlayback = window.setInterval(function() {
 
@@ -19,23 +24,9 @@
       i++;
 
       if ( i === slider.slider( 'option', 'max' ) + 1 ) {
-        if ( loop.prop('checked') ) {
-          i = 0;
-        }
-        else {
-          window.clearInterval( sliderPlayback );
-          isPlaying = false;
-          var end = new Date().getTime();
-          var t = end - start;
-          console.log(t)
-        }
+        window.clearInterval( sliderPlayback );
+        isPlaying = false;
       }
-    }, 1000);
-  });
-  $("#stop").on('click', function(btn) {
-    if ( sliderPlayback != null ) {
-      window.clearInterval(sliderPlayback);
-    }
-    isPlaying = false;
+    }, 500);
   });
 })();
