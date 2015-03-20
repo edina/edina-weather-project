@@ -112,8 +112,8 @@ var averageCharts = (function () {
       .attr("height", hAccessor);
 
   }
-  
-  function createTimeLine(svg){
+
+  function createTimeLine(svg) {
     return svg.append("line")
       .attr("x1", 0)
       .attr("y1", 0)
@@ -121,11 +121,11 @@ var averageCharts = (function () {
       .attr("y2", timelineHeight)
       .attr("stroke-width", 3)
       .attr("stroke", "red");
-    
+
   }
 
-  function createTimeLabel(svg){
-    
+  function createTimeLabel(svg) {
+
     return svg.append("text")
       .attr("x", labelTimeOffset)
       .attr("y", 0)
@@ -140,10 +140,6 @@ var averageCharts = (function () {
 
     var svg = createMainSvg("#temp_chart");
 
-    data.forEach(function (d) {
-      d.time = parseDate(d.time);
-      d.temp = +d.temp;
-    });
 
     x.domain(data.map(function (d) {
       return d.time;
@@ -177,7 +173,7 @@ var averageCharts = (function () {
 
     tempTimeLine = createTimeLine(svg);
     tempTimeLabel = createTimeLabel(svg);
-    
+
     svgTemp = svg;
 
   }
@@ -187,11 +183,6 @@ var averageCharts = (function () {
 
     var svg = createMainSvg("#wind_chart");
 
-
-    data.forEach(function (d) {
-      d.time = parseDate(d.time);
-      d.windspeed = +d.windspeed;
-    });
 
 
     x.domain(data.map(function (d) {
@@ -230,11 +221,6 @@ var averageCharts = (function () {
 
     var svg = createMainSvg("#cloud_chart");
 
-    data.forEach(function (d) {
-      d.time = parseDate(d.time);
-      d.cloud = +d.cloud;
-    });
-
 
     x.domain(data.map(function (d) {
       return d.time;
@@ -270,35 +256,27 @@ var averageCharts = (function () {
   }
   var init = function () {
 
-      var testTempData = "testdata/temp.json";
+      var testTempData = "testdata/combined.json";
       $.getJSON(testTempData)
         .done(function (d) {
-          var data = d.temp;
+          var data = d.data;
+          data.forEach(function (d) {
+            d.time = parseDate(d.time);
+            d.cloud = +d.cloud;
+            d.windspeed = +d.windspeed;
+            d.temp = +d.temp;
+          });
           createTempChart(data);
-        });
-
-      var testWindData = "testdata/wind.json";
-      $.getJSON(testWindData)
-        .done(function (d) {
-          var data = d.wind;
           createWindChart(data);
-        });
-      var testWindData = "testdata/cloud.json";
-      $.getJSON(testWindData)
-        .done(function (d) {
-          var data = d.cloudcover;
           createCloudChart(data);
         });
-
-
-
 
     },
     highlightTime = function (time) {
 
-      //convert to date
-      var minDate = parseDate("2015-03-20 08:00:00");
-      var maxDate = parseDate("2015-03-20 12:50:00");
+      //TO do remove hard coding
+      var minDate = parseDate("2015-03-20 07:00:00");
+      var maxDate = parseDate("2015-03-20 11:00:00");
       var xTimeScale = d3.time.scale()
         .domain([minDate, maxDate])
         .range([0, width]);
