@@ -26,6 +26,8 @@
       if ( i === slider.slider( 'option', 'max' ) + 1 ) {
         window.clearInterval( sliderPlayback );
         isPlaying = false;
+        $('#play-icon').removeClass('glyphicon-stop');
+        $('#play-icon').addClass('glyphicon-play');
       }
     }, 500);
   });
