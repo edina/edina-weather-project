@@ -276,7 +276,7 @@
         var lon = d['lon'];
         var coord = projection([lon, lat]);
         
-        return 'translate(' + coord[0] + ',' + coord[1] + ')';
+        return 'translate(' + (coord[0] - 25) + ',' + (coord[1] - 25) + ')';
       };
 
       function transformCloudPath(value, d, i) {
