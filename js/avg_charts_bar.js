@@ -4,8 +4,7 @@ var averageCharts = (function () {
   var svgTemp;
   var parseDate;
 
-  var maxDataValue;
-  var minDataValue;
+  var tempMaxValue;
   var tempTimeLine;
   var windTimeLine;
   var cloudTimeLine;
@@ -27,6 +26,8 @@ var averageCharts = (function () {
 
 
   var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+
+
 
   var y = d3.scale.linear()
     .range([height, 0]);
@@ -141,20 +142,14 @@ var averageCharts = (function () {
     var svg = createMainSvg("#temp_chart");
 
 
+    tempMaxValue = d3.max(data, function (d) {
+      return d.temp;
+    });
+    y.domain([0, tempMaxValue]);
+
     x.domain(data.map(function (d) {
       return d.time;
     }));
-
-
-    minDataValue = d3.min(data, function (d) {
-      return d.temp;
-    });
-    maxDataValue = d3.max(data, function (d) {
-      return d.temp;
-    });
-    y.domain([minDataValue, maxDataValue]);
-
-
 
     createXAxis(svg);
 
@@ -174,6 +169,21 @@ var averageCharts = (function () {
     tempTimeLine = createTimeLine(svg);
     tempTimeLabel = createTimeLabel(svg);
 
+
+    svg.selectAll("rect")
+      .each(function (d, i) {
+        // In here, d is the ordinal value associated with each tick
+        // and 'this' is the dom element
+
+        var normalisedTempZeroToOne = d3.scale.linear().domain([0, tempMaxValue]).range([0, 1]);
+        var h = (1.0 - normalisedTempZeroToOne(d.temp)) * 240
+        var color = "hsl(" + h + ", 50%, 50%)";
+        var d3this = d3.select(this);
+
+        d3this.style("fill", color)
+
+      });
+
     svgTemp = svg;
 
   }
@@ -185,18 +195,10 @@ var averageCharts = (function () {
 
 
 
-    x.domain(data.map(function (d) {
-      return d.time;
-    }));
-
-
-    minDataValue = d3.min(data, function (d) {
+    var maxDataValue = d3.max(data, function (d) {
       return d.windspeed;
     });
-    maxDataValue = d3.max(data, function (d) {
-      return d.windspeed;
-    });
-    y.domain([minDataValue, maxDataValue]);
+    y.domain([0, maxDataValue]);
 
 
 
@@ -222,18 +224,10 @@ var averageCharts = (function () {
     var svg = createMainSvg("#cloud_chart");
 
 
-    x.domain(data.map(function (d) {
-      return d.time;
-    }));
-
-
-    minDataValue = d3.min(data, function (d) {
+    var maxDataValue = d3.max(data, function (d) {
       return d.cloud;
     });
-    maxDataValue = d3.max(data, function (d) {
-      return d.cloud;
-    });
-    y.domain([minDataValue, maxDataValue]);
+    y.domain([0, maxDataValue]);
 
 
 
@@ -252,6 +246,19 @@ var averageCharts = (function () {
 
     cloudTimeLine = createTimeLine(svg);
     cloudTimeLabel = createTimeLabel(svg)
+
+    svg.selectAll("rect")
+      .each(function (d, i) {
+        // In here, d is the ordinal value associated with each tick
+        // and 'this' is the dom element
+
+        var color = d3.scale.linear().domain([0, maxDataValue]).range(["white", "black"]);
+
+        var d3this = d3.select(this);
+
+        d3this.style("fill",  color(d.cloud));
+
+      });
 
   }
   var init = function () {
@@ -280,21 +287,9 @@ var averageCharts = (function () {
       var xTimeScale = d3.time.scale()
         .domain([minDate, maxDate])
         .range([0, width]);
-      svgTemp.selectAll("rect")
-        .each(function (d, i) {
-          // In here, d is the ordinal value associated with each tick
-          // and 'this' is the dom element
 
-          var normalisedTempZeroToOne = d3.scale.linear().domain([minDataValue, maxDataValue]).range([0, 1]);
-          var h = (1.0 - normalisedTempZeroToOne(d.temp)) * 240
-          var color = "hsl(" + h + ", 50%, 50%)";
-          var d3this = d3.select(this);
-
-          d3this.style("fill", color)
-
-        });
       var outputX = xTimeScale(time);
-      console.log(outputX);
+
       tempTimeLine
         .attr("x1", outputX)
         .attr("y1", 5)
