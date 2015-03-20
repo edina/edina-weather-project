@@ -7,23 +7,26 @@ var averageCharts = (function () {
   var maxDataValue;
   var minDataValue;
 
+  var margin = {
+    top: 20,
+    right: 20,
+    bottom: 100,
+    left: 50
+  };
+  var width = 500 - margin.left - margin.right;
+  var height = 300 - margin.top - margin.bottom;
+  var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
 
-  var x,y;
+
+
+
+  var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+
+  var y = d3.scale.linear()
+    .range([height, 0]);
+
 
   function createTempChart(data) {
-    var margin = {
-      top: 20,
-      right: 20,
-      bottom: 100,
-      left: 50
-    };
-    var width = 500 - margin.left - margin.right;
-    var height = 300 - margin.top - margin.bottom;
-    var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
-
-    var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
-    //var x = d3.time.scale()
-    //    .range([0, width]);
 
     var svg = d3.select("#temp_chart").append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -32,10 +35,7 @@ var averageCharts = (function () {
       .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
 
-    x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
 
-    y = d3.scale.linear()
-      .range([height, 0]);
 
     var xAxis = d3.svg.axis()
       .scale(x)
@@ -85,10 +85,10 @@ var averageCharts = (function () {
       .call(yAxis)
       .append("text")
       .attr("transform", "rotate(-90)")
-      .attr("y", 6)
+      .attr("y", -45)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Temperature C");
+      .text("Temperature");
 
     svg.selectAll("bar")
       .data(data)
@@ -127,17 +127,6 @@ var averageCharts = (function () {
 
 
   function createWindChart(data) {
-    var margin = {
-      top: 20,
-      right: 20,
-      bottom: 100,
-      left: 50
-    };
-    var width = 500 - margin.left - margin.right;
-    var height = 300 - margin.top - margin.bottom;
-    var parseDate = d3.time.format("%Y-%m-%d %H:%M:%S").parse;
-    //var x = d3.time.scale()
-    //    .range([0, width]);
 
     var svg = d3.select("#wind_chart").append("svg")
       .attr("width", width + margin.left + margin.right)
@@ -145,11 +134,6 @@ var averageCharts = (function () {
       .append("g")
       .attr("transform",
         "translate(" + margin.left + "," + margin.top + ")");
-
-    x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
-
-    y = d3.scale.linear()
-      .range([height, 0]);
 
     var xAxis = d3.svg.axis()
       .scale(x)
@@ -200,10 +184,10 @@ var averageCharts = (function () {
       .call(yAxis)
       .append("text")
       .attr("transform", "rotate(-90)")
-      .attr("y", 6)
+      .attr("y", -45)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Temperature C");
+      .text("Wind Speed");
 
     svg.selectAll("bar")
       .data(data)
@@ -285,14 +269,21 @@ var averageCharts = (function () {
     },
     changeToWindSpeed = function () {
 
-      $('#temp_chart').hide();
-      $('#wind_chart').show();
+      $('#container_temp_chart').hide();
+      $('#container_wind_chart').fadeIn(1000);
+
+    },
+    changeToTemperature = function () {
+      $('#container_wind_chart').hide();
+      $('#container_temp_chart').fadeIn(1000);
+
 
     };
   return {
     init: init,
     highlightTime: highlightTime,
-    changeToWindSpeed: changeToWindSpeed
+    changeToWindSpeed: changeToWindSpeed,
+    changeToTemperature: changeToTemperature
   }
 
 })();
@@ -319,9 +310,13 @@ if (typeof window === "object" && typeof window.document === "object") {
 $(document).ready(function () {
   var charts = averageCharts;
   charts.init();
-  $('#wind_chart').hide();
+  $('#container_wind_chart').hide();
   $("#windSpeedBut").click(function () {
 
     charts.changeToWindSpeed();
+  });
+  $("#tempBut").click(function () {
+
+    charts.changeToTemperature();
   });
 });
