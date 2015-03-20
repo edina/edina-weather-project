@@ -85,10 +85,10 @@ var averageCharts = (function () {
       .call(yAxis)
       .append("text")
       .attr("transform", "rotate(-90)")
-      .attr("y", 6)
+      .attr("y", -45)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Temperature C");
+      .text("Temperature");
 
     svg.selectAll("bar")
       .data(data)
@@ -184,10 +184,10 @@ var averageCharts = (function () {
       .call(yAxis)
       .append("text")
       .attr("transform", "rotate(-90)")
-      .attr("y", 6)
+      .attr("y", -45)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Temperature C");
+      .text("Wind Speed");
 
     svg.selectAll("bar")
       .data(data)
