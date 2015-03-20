@@ -50,8 +50,9 @@
 
   var width = 580,
     height = 800;
-  var ANIMATION_MOVES = 12 * 12; // midnight to midday, 5 minute increments
+  var ANIMATION_MOVES = 4 * 12; // midnight to midday, 5 minute increments
   var FRAMES_PER_HOUR = 12; // 5 minute intervals per hour
+  var HOUR_OFFSET = 7;
 
   var svg = d3.select("#map").append("svg")
     .attr("width", width)
@@ -120,7 +121,7 @@
       .attr("xlink:href", "");
 
     // Load wind data
-    d3.json("http://datapoint.metoffice.gov.uk/public/data/val/wxobs/all/json/all?res=hourly&key=76f2c909-4e4b-4239-87fe-b7602605093e", function (error, data) {
+    d3.json("data/weather.json", function (error, data) {
       if (error) return console.error(error);
 
       // Heatmap
@@ -133,7 +134,7 @@
           return i % 3 === 0 ? this : null;
         })
         .attr('transform', function (d, i) {
-          return transformWind(0, d, i);
+          return transformWind(HOUR_OFFSET, d, i);
         })
         .attr('d', function (d) {
           return symbols.getSymbol('wind', d.size);
@@ -231,7 +232,7 @@
       }
 
       slider.on('slide', function (event, ui) {
-        doTransition(Math.floor(ui.value / FRAMES_PER_HOUR));
+        doTransition(Math.floor(ui.value / FRAMES_PER_HOUR) + HOUR_OFFSET);
       });
 
       // Load cloud data
@@ -260,16 +261,16 @@
             // return this ;
         })
         .attr('transform', function (d, i) {
-          return transformCloud(0, d, i);
+          return transformCloud(HOUR_OFFSET, d, i);
         })
         .attr('d', function (d, i) { // d is svg path attr
-          return transformCloudPath(0, d, i);
+          return transformCloudPath(HOUR_OFFSET, d, i);
         })
 //        .attr("clip-path", "url(#ukClipPath);")
         .attr('stroke', '#333')
         .attr('class', 'clouds')
         .attr('fill', function (d, i) {
-          return transformCloudFill(0, d, i);
+          return transformCloudFill(HOUR_OFFSET, d, i);
         });
 
       function transformCloud(value, d, i) {
@@ -329,7 +330,7 @@
       }
 
       slider.on('slide', function (event, ui) {
-        doTransitionCloud(Math.floor(ui.value / FRAMES_PER_HOUR));
+        doTransitionCloud(Math.floor(ui.value / FRAMES_PER_HOUR) + HOUR_OFFSET);
       });
 
       function doHeatMap(value) {
@@ -385,11 +386,11 @@
       };
 
       slider.on('slide', function (event, ui) {
-        doHeatMap(Math.floor(ui.value / FRAMES_PER_HOUR));
+        doHeatMap(Math.floor(ui.value / FRAMES_PER_HOUR) + HOUR_OFFSET);
         $('.heatmap-canvas').index = 0;
       });
 
-      doHeatMap(0);
+      doHeatMap(HOUR_OFFSET);
     }); // end of async wind data
 
 

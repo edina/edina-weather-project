@@ -14,7 +14,7 @@
 function setTime(value) {
     //not used
     var getUnixTime = function(hours, minutes){
-      var date = new Date(2015, 2, 20, 0, 0);
+      var date = new Date(2015, 2, 20, 7, 0);
       return date.getTime()/1000|0;
     }
     var getDate = function(hours,minutes){
@@ -22,6 +22,7 @@ function setTime(value) {
     };
     var hours = Math.floor(value/12);
     var minutes = (value - (hours * 12)) * 5;
+    hours += 7;
     var dt = getDate(hours, minutes) ;
     //$("#time").html(getDate(hours, minutes).toString());
     var displayHours = dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours();
