@@ -42,7 +42,7 @@
   var windSymbol = {
     halfWidth: 16,
     halfHeight: 16,
-    scale: 1.2,
+    scale: 1,
     orientation: 90
   };
 
@@ -276,7 +276,7 @@
         var lon = d['lon'];
         var coord = projection([lon, lat]);
         
-        return 'translate(' + (coord[0] - 25) + ',' + (coord[1] - 25) + ')';
+        return 'translate(' + (coord[0] - 20) + ',' + (coord[1] - 20) + ') scale(0.8)';
       };
 
       function transformCloudPath(value, d, i) {
