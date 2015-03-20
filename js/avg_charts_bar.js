@@ -4,7 +4,7 @@ var averageCharts = (function () {
   var svgTemp;
   var parseDate;
 
-  var tempMaxValue;
+
   var tempTimeLine;
   var windTimeLine;
   var cloudTimeLine;
@@ -137,12 +137,23 @@ var averageCharts = (function () {
 
   }
 
+  function movetTimeLine(line, x) {
+
+    line.attr("x1", x)
+      .attr("y1", 5)
+      .attr("x2", x)
+      .attr("y2", timelineHeight)
+      .attr("stroke-width", 3)
+      .attr("stroke", "red");
+
+  }
+
   function createTempChart(data) {
 
     var svg = createMainSvg("#temp_chart");
 
 
-    tempMaxValue = d3.max(data, function (d) {
+    var tempMaxValue = d3.max(data, function (d) {
       return d.temp;
     });
     y.domain([0, tempMaxValue]);
@@ -256,7 +267,7 @@ var averageCharts = (function () {
 
         var d3this = d3.select(this);
 
-        d3this.style("fill",  color(d.cloud));
+        d3this.style("fill", color(d.cloud));
 
       });
 
@@ -290,25 +301,12 @@ var averageCharts = (function () {
 
       var outputX = xTimeScale(time);
 
-      tempTimeLine
-        .attr("x1", outputX)
-        .attr("y1", 5)
-        .attr("x2", outputX)
-        .attr("y2", timelineHeight)
-        .attr("stroke-width", 3)
-        .attr("stroke", "red");
-      windTimeLine.attr("x1", outputX)
-        .attr("y1", 5)
-        .attr("x2", outputX)
-        .attr("y2", timelineHeight)
-        .attr("stroke-width", 3)
-        .attr("stroke", "red")
-      cloudTimeLine.attr("x1", outputX)
-        .attr("y1", 5)
-        .attr("x2", outputX)
-        .attr("y2", timelineHeight)
-        .attr("stroke-width", 3)
-        .attr("stroke", "red");
+      movetTimeLine(tempTimeLine, outputX);
+    
+      movetTimeLine(windTimeLine, outputX);
+
+      movetTimeLine(cloudTimeLine, outputX);
+
       tempTimeLabel.attr("x", outputX + labelTimeOffset)
       windTimeLabel.attr("x", outputX + labelTimeOffset)
       cloudTimeLabel.attr("x", outputX + labelTimeOffset)
