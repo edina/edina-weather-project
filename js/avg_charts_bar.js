@@ -6,7 +6,9 @@ var averageCharts = (function () {
 
   var maxDataValue;
   var minDataValue;
-
+  var tempTimeLine;
+  var windTimeLine;
+  var cloudTimeLine;
   var margin = {
     top: 20,
     right: 20,
@@ -121,6 +123,13 @@ var averageCharts = (function () {
         }
       });
 
+    tempTimeLine = svg.append("line")
+      .attr("x1", 0)
+      .attr("y1", 0)
+      .attr("x2", 0)
+      .attr("y2", height)
+      .attr("stroke-width", 3)
+      .attr("stroke", "red");
     svgTemp = svg;
 
   }
@@ -220,7 +229,14 @@ var averageCharts = (function () {
         }
       });
 
-
+    windTimeLine = svg.append("line")
+      .attr("x1", 0)
+      .attr("y1", 0)
+      .attr("x2", 0)
+      .attr("y2", height)
+      .attr("stroke-width", 3)
+      .attr("stroke", "red");
+    
 
   }
 
@@ -318,6 +334,14 @@ var averageCharts = (function () {
           return 0;
         }
       });
+    
+      cloudTimeLine = svg.append("line")
+      .attr("x1", 0)
+      .attr("y1", 0)
+      .attr("x2", 0)
+      .attr("y2", height)
+      .attr("stroke-width", 3)
+      .attr("stroke", "red");
 
 
 
@@ -349,8 +373,13 @@ var averageCharts = (function () {
 
     },
     highlightTime = function (time) {
-      //convert to date
 
+      //convert to date
+      var minDate = parseDate("2015-03-20 08:00:00");
+      var maxDate = parseDate("2015-03-20 12:50:00");
+      var xTimeScale = d3.time.scale()
+        .domain([minDate, maxDate])
+        .range([0, width]);
       svgTemp.selectAll("rect")
         .each(function (d, i) {
           // In here, d is the ordinal value associated with each tick
@@ -359,7 +388,7 @@ var averageCharts = (function () {
           var normalisedTempZeroToOne = d3.scale.linear().domain([minDataValue, maxDataValue]).range([0, 1]);
           var h = (1.0 - normalisedTempZeroToOne(d.temp)) * 240
           var color = "hsl(" + h + ", 50%, 50%)";
-          var d3this = d3.select(this);
+          /*var d3this = d3.select(this);
           if (d.time.getTime() === time.getTime()) {
             d3this.style("fill", color)
             d3this.style("stroke", "black");
@@ -368,10 +397,29 @@ var averageCharts = (function () {
             d3this.style("fill", color);
             d3this.style("stroke", "black");
             d3this.style("stroke-width", 1);
-          }
-        })
-
-
+          }*/
+        });
+      var outputX = xTimeScale(time);
+      console.log(outputX);
+      tempTimeLine
+        .attr("x1", outputX)
+        .attr("y1", 5)
+        .attr("x2", outputX)
+        .attr("y2", height)
+        .attr("stroke-width", 3)
+        .attr("stroke", "red");
+      windTimeLine.attr("x1", outputX)
+        .attr("y1", 5)
+        .attr("x2", outputX)
+        .attr("y2", height)
+        .attr("stroke-width", 3)
+        .attr("stroke", "red")
+      cloudTimeLine.attr("x1", outputX)
+        .attr("y1", 5)
+        .attr("x2", outputX)
+        .attr("y2", height)
+        .attr("stroke-width", 3)
+        .attr("stroke", "red");
     },
     changeToWindSpeed = function () {
       $('#tempBut').css("background-color", "")
