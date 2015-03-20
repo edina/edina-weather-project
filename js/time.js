@@ -23,8 +23,10 @@ function setTime(value) {
     var hours = Math.floor(value/12);
     var minutes = (value - (hours * 12)) * 5;
     var dt = getDate(hours, minutes) ;
-    $("#time").html(getDate(hours, minutes).toString());
-    //$("#time").html(dt.getHours() + ":"+ dt.getMinutes()) ;
+    //$("#time").html(getDate(hours, minutes).toString());
+    var displayHours = dt.getHours() < 10 ? "0" + dt.getHours() : dt.getHours();
+    var displayMinutes = dt.getMinutes() < 10 ? "0" + dt.getMinutes() : dt.getMinutes();
+    $("#time").html(displayHours + ":"+ displayMinutes) ;
     var charts = averageCharts;
     averageCharts.highlightTime(getDate(hours, minutes));
   }
