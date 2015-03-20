@@ -50,7 +50,7 @@ var averageCharts = (function () {
 
   }
 
-  function createYAxis(svg) {
+  function createYAxis(svg, label) {
 
     var yAxis = d3.svg.axis()
       .scale(y)
@@ -64,7 +64,7 @@ var averageCharts = (function () {
       .attr("y", -45)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Average Temperature");
+      .text(label);
 
 
 
@@ -164,7 +164,7 @@ var averageCharts = (function () {
 
     createXAxis(svg);
 
-    createYAxis(svg);
+    createYAxis(svg, "Average Temperature");
 
     createBars(svg, data, function (d) {
       return y(d.temp);
@@ -214,7 +214,7 @@ var averageCharts = (function () {
 
 
     createXAxis(svg);
-    createYAxis(svg);
+    createYAxis(svg, "Average Wind Speed");
 
     createBars(svg, data, function (d) {
       return y(d.windspeed);
@@ -243,7 +243,7 @@ var averageCharts = (function () {
 
 
     createXAxis(svg);
-    createYAxis(svg);
+    createYAxis(svg, "Average Cloud Cover");
 
 
     createBars(svg, data, function (d) {
