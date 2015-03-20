@@ -402,5 +402,5 @@ console.log(uk.objects);
   }); // end of async map data
 
   // Start eclise animation now we know the size of the data
-  eclipseAnimation(ANIMATION_MOVES, slider);
+  eclipseAnimation(slider);
 })();
