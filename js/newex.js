@@ -363,7 +363,7 @@ console.log(uk.objects);
         $(".heatmap-canvas").remove();
 
         var heatmapInstance2 = h337.create({
-          container: document.getElementById('svgForeignObject'),
+          container: document.getElementById('map'),
           radius: 55,
           maxOpacity: 0.4,
           minOpacity: 0,
