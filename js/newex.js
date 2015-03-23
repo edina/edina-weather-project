@@ -56,7 +56,8 @@
 
   var svg = d3.select("#map").append("svg")
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height)
+    .attr("id", "svgscene");
 
   svg.append("foreignObject")
     .attr("width", width)
@@ -363,7 +364,7 @@ console.log(uk.objects);
         $(".heatmap-canvas").remove();
 
         var heatmapInstance2 = h337.create({
-          container: document.getElementById('map'),
+          container: document.getElementById('svgscene'),
           radius: 55,
           maxOpacity: 0.4,
           minOpacity: 0,
@@ -377,7 +378,7 @@ console.log(uk.objects);
         $(".heatmap-canvas").hide();
 
         document.getElementById("canvasImage").setAttribute("href", canvasdataUrl);
-
+          
 
         // Ensure the animation respects visibility checkbox
         if (!$('#temperature').is(':checked')) {
