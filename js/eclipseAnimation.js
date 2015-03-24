@@ -9,39 +9,50 @@ var eclipseAnimation = function(slider) {
     var $eclipse = $(".eclipse");
     var eclipseWidth = $eclipse.width();
 
-    var MOVES = 36;
-    console.log(eclipseWidth/2)
+    
     var sunPosition = $(".sun").position().left;
     var INITIAL_POS = sunPosition - 60;
     var FINAL_POS = sunPosition + 50;
     console.log(INITIAL_POS, FINAL_POS)
-    var START_ECLIPSE_STEP = 12;
+    var START_ECLIPSE_STEP = 16;
     var END_ECLIPSE_STEP = 48;
+    var MOVES = END_ECLIPSE_STEP - START_ECLIPSE_STEP ;
     var sliderValue = 0;
+    var stepIncrement = eclipseWidth / END_ECLIPSE_STEP ;
+    //sunPosition = Math.floor((START_ECLIPSE_STEP *  stepIncrement) + $(".sun").width()) ;
+    
+    
+    
     var EXECUTION_TIME = 18000;
 
     $moon.css({"left": INITIAL_POS});
     var step = (FINAL_POS - INITIAL_POS)/MOVES;
+    var skyColorsSize = 17 ;
     var skyColors = {
-        12: ["#90dffe", "#38a3d1"],
-        13: ["#7EC3DE", "#318FB7"],
-        14: ["#6CA7BF","#2A7A9D"],
-        15: ["#5A8B9F","#236683"],
-        16: ["#48707F","#1C5269"],
-        17: ["#36545F","#153D4E"],
-        18: ["#243840","#0E2934"],
-        19: ["#121C20","#07141A"],
-        20: ["#000000","#000000"],
-        21: ["#121C20","#07141A"],
-        22: ["#243840","#0E2934"],
-        23: ["#36545F","#153D4E"],
-        24: ["#5A8B9F","#1C5269"],
-        25: ["#6CA7BF","#236683"],
-        26: ["#7EC3DE","#2A7A9D"],
-        27: ["#80C6E2", "#318FB7"],
-        28: ["#90dffe", "#38a3d1"]
+        1: ["#90dffe", "#38a3d1"],
+        2: ["#7EC3DE", "#318FB7"],
+        3: ["#6CA7BF","#2A7A9D"],
+        4: ["#5A8B9F","#236683"],
+        5: ["#48707F","#1C5269"],
+        6: ["#36545F","#153D4E"],
+        7: ["#243840","#0E2934"],
+        8: ["#121C20","#07141A"],
+        9: ["#000000","#000000"],
+        10: ["#121C20","#07141A"],
+        11: ["#243840","#0E2934"],
+        12: ["#36545F","#153D4E"],
+        13: ["#5A8B9F","#1C5269"],
+        14: ["#6CA7BF","#236683"],
+        15: ["#7EC3DE","#2A7A9D"],
+        16: ["#80C6E2", "#318FB7"],
+        17: ["#90dffe", "#38a3d1"]
     };
 
+    var changeBackgroundColor = function(sliderValue)
+    {
+           
+    };
+    
     var animateEclipse = function(value) {
         if(moonShouldMove(value)){
             value = value - START_ECLIPSE_STEP;
@@ -94,6 +105,58 @@ var eclipseAnimation = function(slider) {
         });
     };
 
+    var moveMoon = function(sliderval)
+    {
+      // number of steps in slider  
+      var numEclispeSteps = END_ECLIPSE_STEP - START_ECLIPSE_STEP ;
+          
+      var sunWidth = $(".sun").width() ;
+      var sunPosition = $(".sun").position().left ;    
+      var sliderIncrement = eclipseWidth / END_ECLIPSE_STEP ;
+      var sunIncrement = (sunWidth*2) / MOVES ;
+    
+      console.log("sunwidth : " + sunWidth + " sunIncrement:" + sunIncrement + " sunPsoition: " + sunPosition ) ;    
+        
+      if(sliderval >= START_ECLIPSE_STEP && sliderIncrement <= END_ECLIPSE_STEP)
+      {
+          var eclipseStep = sliderval - START_ECLIPSE_STEP ; 
+          var sunOffset =  eclipseStep * sunIncrement ;
+          var moonPosition = (sunPosition + sunOffset) - sunWidth ;
+                      
+    //  console.log("sliderval: " + sliderval + " eclipseStep:" + eclipseStep + " sunOffset:" + sunOffset + " monnPosition" + moonPosition ) ;           
+             
+        $moon.animate({left:moonPosition },
+        {
+            easing: "linear",
+            duration: 0
+                       
+        }) ;
+    
+        
+          
+         var bracketSize = numEclispeSteps / skyColorsSize ;
+         var colIndex = Math.floor(eclipseStep / bracketSize) ;
+          
+         if(eclipseStep % bracketSize !== 0)
+         {
+            colIndex = colIndex + 1 ;   
+         }
+         var colors = skyColors[colIndex];
+          if(colors){
+                $eclipse.css({"background": "linear-gradient(to bottom, "+colors[0]+" 0%,"+colors[1]+" 100%)"});
+                $moon.css({"background": "linear-gradient(to bottom, "+colors[0]+" -50%,"+colors[1]+" 125%)"});
+                }  
+     
+     }
+      else
+      {
+        resetColors() ;   
+      }
+            
+      
+      
+    }
+    
     var moonShouldMove = function(s){
         return s >= START_ECLIPSE_STEP && s<=END_ECLIPSE_STEP;
     }
@@ -126,8 +189,16 @@ var eclipseAnimation = function(slider) {
     //}
 
     //EVENTS
+    
     $(slider).on('slide', function(event, ui) {
         sliderValue = ui.value;
+        moveMoon(sliderValue) ;
+    }) ;
+    
+    /*
+    $(slider).on('slide', function(event, ui) {
+        sliderValue = ui.value;
+        moveMoon(sliderValue) ;
         if(isPlaying && moonShouldMove(ui.value)){
             moveMoonWithAnimation(FINAL_POS, undefined, EXECUTION_TIME);
         }
@@ -135,11 +206,31 @@ var eclipseAnimation = function(slider) {
             animateEclipse(ui.value);
         }
     });
-
+*/
+    
+    $("#play").click(function(){
+        // get play button state - note that as soon as button pressed changes so couter intuitively the state is stop when play button pressed
+        var $playIcon = $("#play-icon"); 
+         if($playIcon.hasClass("glyphicon-stop")){
+            // user has pressed play
+             var moonPosition = $(".sun").position().left - $(".sun").width() ; 
+             
+             $moon.animate({left:moonPosition },
+                    {
+                        easing: "linear",
+                        duration: 0
+                       
+                     }) ;
+             
+             resetColors() ;
+        }
+    });
+    
+    /*
     $("#play").click(function(){
         var $playIcon = $("#play-icon");
         if($playIcon.hasClass("glyphicon-play")){
-            $moon.stop(true);
+            $moon§.stop(true);
         }
         if($("#play-icon").hasClass("glyphicon-stop")){
             moveEclipse(0);
@@ -150,8 +241,11 @@ var eclipseAnimation = function(slider) {
             moveMoonWithAnimation(FINAL_POS, undefined, EXECUTION_TIME);
         }
     });
+    
+    */
 };
 
+    
 // Modules shim
 if (typeof module === 'object' && typeof module.exports === 'object') {
     module.exports =  eclipseAnimation;
